@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&Teko:wght@700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+	font-size: 18px;
+}
+
+.td-no-wrap {
+	width: 0.1%;
+	white-space: nowrap;
+}
+
+.badge-president {
+	--tw-border-opacity: 1;
+	border-color: hsl(var(--p) / var(--tw-border-opacity));
+	--tw-bg-opacity: 1;
+	background-color: hsl(var(--p) / var(--tw-bg-opacity));
+	--tw-text-opacity: 1;
+	color: hsl(var(--b1) / var(--tw-text-opacity));
+}
+
+.badge-vice-president {
+	--tw-border-opacity: 1;
+	border-color: hsl(var(--a) / var(--tw-border-opacity));
+	--tw-bg-opacity: 1;
+	background-color: hsl(var(--a) / var(--tw-bg-opacity));
+	--tw-text-opacity: 1;
+	color: hsl(var(--b1) / var(--tw-text-opacity));
+}
+.badge-senior {
+	--tw-border-opacity: 1;
+	border-color: hsl(var(--s) / var(--tw-border-opacity));
+	--tw-bg-opacity: 1;
+	background-color: hsl(var(--s) / var(--tw-bg-opacity));
+	--tw-text-opacity: 1;
+	color: hsl(var(--b1) / var(--tw-text-opacity));
+}
