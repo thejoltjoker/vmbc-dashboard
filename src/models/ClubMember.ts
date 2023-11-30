@@ -1,5 +1,4 @@
-// ClubMember.ts
-import PlayerIcon from "./brawlstars.PlayerIcon";
+import PlayerIcon from "./PlayerIcon";
 
 interface ClubMember {
   icon: PlayerIcon;
