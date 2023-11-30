@@ -43,7 +43,7 @@ onMounted(() => {
   <div class="max-w-screen-xl mx-auto text-white">
     <MainHeader :clubIcon="clubIcon" :club="club" />
 
-    <div class="mb-6">
+    <div v-if="club.trophies !== undefined" class="mb-6">
       <div class="flex flex-row justify-stretch gap-3">
         <div
           class="grow grid grid-cols-2 uppercase text-stone-400 font-display text-4xl font-bold"
@@ -127,6 +127,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <ClubTable :members="members" :icons="icons" />
+    <ClubTable v-if="members !== undefined" :members="members" :icons="icons" />
   </div>
 </template>

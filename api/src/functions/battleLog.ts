@@ -28,7 +28,7 @@ export async function battleLog(
 }
 
 app.http("battleLog", {
-  methods: ["GET", "POST"],
+  methods: ["GET"],
   authLevel: "anonymous",
   route: "player/{tag}/battles",
   handler: battleLog,
