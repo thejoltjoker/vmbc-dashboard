@@ -2,7 +2,7 @@
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import ClubMember from "../models/ClubMember";
-import Icons from "../models/brawlapi.Icons";
+
 import ClubTableRow from "./ClubTableRow.vue";
 
 const props = defineProps<{
@@ -124,10 +124,10 @@ onMounted(() => {
       </thead>
       <tbody>
         <ClubTableRow
-          v-for="member in members"
+          v-for="member in props.members"
           :key="member.tag"
           :member="member"
-          :icon="icons.player[member.icon.id]"
+          :icon="(icons.player as any)[member.icon.id]"
         />
       </tbody>
     </table>

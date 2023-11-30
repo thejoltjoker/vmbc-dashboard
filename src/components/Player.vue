@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 const User = {
   template: "...",
   created() {
@@ -10,4 +10,4 @@ const User = {
     );
   },
 };
-</script>
+</script> -->

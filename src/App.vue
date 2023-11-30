@@ -22,6 +22,8 @@ import ClubMember from "./models/ClubMember";
 import MainHeader from "./components/MainHeader.vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import ClubIcon from "./models/brawlapi.ClubIcon";
+import Icons from "./models/brawlapi.Icons";
 
 // Define a reactive variable to store the fetched data
 const club = ref({
@@ -38,8 +40,11 @@ const club = ref({
 const members = ref([] as ClubMember[]);
 
 // Icons
-const icons = ref({ player: {}, club: {} });
-const clubIcon = ref("");
+const icons = ref<Icons>({ player: {}, club: {} });
+const clubIcon = ref<ClubIcon>({
+  id: 0,
+  imageUrl: "",
+});
 
 // Define a function to fetch data from the API
 const fetchData = async () => {
@@ -53,7 +58,7 @@ const fetchData = async () => {
     const iconsUrl = `${import.meta.env.VITE_API_URL}/api/icons`;
     const iconsResponse = await axios.get(iconsUrl);
     icons.value = iconsResponse.data;
-    clubIcon.value = icons.value.club[club.value.badgeId].imageUrl;
+    clubIcon.value = icons.value.club[club.value.badgeId];
   } catch (error) {
     console.error("Error fetching data:", error);
   }

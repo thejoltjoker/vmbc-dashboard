@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import ClubIcon from "../models/brawlapi.ClubIcon";
+
 defineProps<{
-  clubIcon: string;
+  clubIcon: ClubIcon;
   club: {
     tag: string;
     name: string;
@@ -29,7 +31,7 @@ defineProps<{
 
 <template>
   <header class="mt-6 mb-16 text-center">
-    <img :src="clubIcon" alt="Club Badge" class="w-40 mx-auto mb-3" />
+    <img :src="clubIcon.imageUrl" alt="Club Badge" class="w-40 mx-auto mb-3" />
 
     <h1 class="font-display text-white text-7xl font-black uppercase">
       Vacay Mania Brawl Club
