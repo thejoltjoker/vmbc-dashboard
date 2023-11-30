@@ -10,7 +10,7 @@ export async function club(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
-  console.log(process.env.API_KEY);
+  
   let headersList = {
     Accept: "*/*",
     Authorization: `Bearer ${process.env.API_KEY}`,
