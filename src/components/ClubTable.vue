@@ -15,7 +15,7 @@ const icons = ref({ player: {}, club: {} });
 // Define a function to fetch data from the API
 const fetchData = async () => {
   try {
-    const iconsUrl = `${import.meta.env.VITE_API_URL}/api/icons`;
+    const iconsUrl = `${import.meta.env.VITE_API_URL || ""}/api/icons`;
     const iconsResponse = await axios.get(iconsUrl);
     icons.value = iconsResponse.data;
   } catch (error) {

@@ -49,13 +49,13 @@ const clubIcon = ref<ClubIcon>({
 // Define a function to fetch data from the API
 const fetchData = async () => {
   try {
-    const url = `${import.meta.env.VITE_API_URL}/api/club`;
+    const url = `${import.meta.env.VITE_API_URL || ""}/api/club`;
     const response = await axios.get(url);
 
     club.value = response.data; // Set club value
     members.value = club.value.members; // Set members
 
-    const iconsUrl = `${import.meta.env.VITE_API_URL}/api/icons`;
+    const iconsUrl = `${import.meta.env.VITE_API_URL || ""}/api/icons`;
     const iconsResponse = await axios.get(iconsUrl);
     icons.value = iconsResponse.data;
     clubIcon.value = icons.value.club[club.value.badgeId];

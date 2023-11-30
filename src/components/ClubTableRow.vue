@@ -92,7 +92,7 @@ const fetchData = async () => {
   try {
     // Fetch battles to calculate win rate etc
     const url = `${
-      import.meta.env.VITE_API_URL
+      import.meta.env.VITE_API_URL || ""
     }/api/player/${encodeURIComponent(props.member.tag)}/battles`;
     const response = await axios.get(url);
     battles.value = response.data.items;
