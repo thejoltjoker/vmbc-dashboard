@@ -1,27 +1,35 @@
 <script setup lang="ts">
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import ClubMember from "../models/ClubMember";
+import Icons from "../models/brawlapi.Icons";
 import ClubTableRow from "./ClubTableRow.vue";
 
-defineProps<{
-  members: {
-    icon: any;
-    tag: string;
-    name: string;
-    trophies: number;
-    role:
-      | "member"
-      | "notMember"
-      | "president"
-      | "senior"
-      | "vicePresident"
-      | "unknown";
-    nameColor: string;
-  }[];
-  icons: {};
+const props = defineProps<{
+  members: ClubMember[];
 }>();
+
+// Icons
+const icons = ref({ player: {}, club: {} });
+
+// Define a function to fetch data from the API
+const fetchData = async () => {
+  try {
+    const iconsUrl = `${import.meta.env.VITE_API_URL}/api/icons`;
+    const iconsResponse = await axios.get(iconsUrl);
+    icons.value = iconsResponse.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+// Use the onMounted lifecycle hook to fetch data when the component is mounted
+onMounted(() => {
+  fetchData();
+});
 </script>
 
 <template>
-  <div class="relative overflow-x-auto rounded-lg">
+  <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left rtl:text-right">
       <thead class="text-xs uppercase">
         <tr>
@@ -119,7 +127,7 @@ defineProps<{
           v-for="member in members"
           :key="member.tag"
           :member="member"
-          :icons="icons"
+          :icon="icons.player[member.icon.id]"
         />
       </tbody>
     </table>

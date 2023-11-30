@@ -1,14 +1,29 @@
+<!--
+
+
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get("/api/club");
+    
+    const iconsResponse = await axios.get("/api/icons");
+    icons.value = iconsResponse.data;
+    clubIcon.value = icons.value.club[club.value.badgeId].imageUrl;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+</script> -->
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import axios from "axios";
 import ClubTable from "./components/ClubTable.vue";
 import Club from "./models/Club";
 import ClubMember from "./models/ClubMember";
 import MainHeader from "./components/MainHeader.vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 
-const members = ref([] as ClubMember[]);
-const icons = ref({ player: {}, club: {} });
-const clubIcon = ref("");
+// Define a reactive variable to store the fetched data
 const club = ref({
   tag: "",
   name: "VMBC",
@@ -20,13 +35,23 @@ const club = ref({
   badgeId: 8000035,
 } as Club); // Assuming trophies is a number
 
+const members = ref([] as ClubMember[]);
+
+// Icons
+const icons = ref({ player: {}, club: {} });
+const clubIcon = ref("");
+
+// Define a function to fetch data from the API
 const fetchData = async () => {
   try {
-    const response = await axios.get("/api/club");
-    club.value = response.data;
-    members.value = club.value.members;
+    const url = `${import.meta.env.VITE_API_URL}/api/club`;
+    const response = await axios.get(url);
 
-    const iconsResponse = await axios.get("/api/icons");
+    club.value = response.data; // Set club value
+    members.value = club.value.members; // Set members
+
+    const iconsUrl = `${import.meta.env.VITE_API_URL}/api/icons`;
+    const iconsResponse = await axios.get(iconsUrl);
     icons.value = iconsResponse.data;
     clubIcon.value = icons.value.club[club.value.badgeId].imageUrl;
   } catch (error) {
@@ -34,16 +59,17 @@ const fetchData = async () => {
   }
 };
 
+// Use the onMounted lifecycle hook to fetch data when the component is mounted
 onMounted(() => {
   fetchData();
 });
 </script>
 
 <template>
-  <div class="max-w-screen-xl mx-auto text-white">
+  <div class="max-w-screen-xl mx-auto text-white px-3">
     <MainHeader :clubIcon="clubIcon" :club="club" />
 
-    <div v-if="club.trophies !== undefined" class="mb-6">
+    <div class="mb-6">
       <div class="flex flex-row justify-stretch gap-3">
         <div
           class="grow grid grid-cols-2 uppercase text-stone-400 font-display text-4xl font-bold"
@@ -61,46 +87,48 @@ onMounted(() => {
             Members
           </div>
           <div class="">
-            <span class="text-amber-400 text-6xl">{{
-              club.trophies.toLocaleString()
-            }}</span>
+            <span class="text-sky-400 text-6xl">N/A</span>
             <br />
-            Average win rate
+            Avg. win rate
           </div>
           <div class="">
-            <span class="text-pink-500 text-6xl">{{ members.length }}</span>
+            <span class="text-violet-500 text-6xl">100%</span>
             <br />
-            Members
+            Chill
           </div>
         </div>
-        <div class="grow shrink">
-          <div class="text-stone-400 grid grid-cols-2 grow">
+        <div class="grow shrink flex flex-col justify-between">
+          <div class="text-stone-400 grid grid-cols-2">
             <div
               class="uppercase text-white font-display text-4xl font-bold col-span-full"
             >
               Status
             </div>
-            Available Seats:
 
-            <template v-if="club.members.length >= 30">
-              <span class="text-red-500 font-bold"> Currently full </span>
-            </template>
-            <template v-else>
-              <span class="text-sky-500 font-bold">
-                {{ 30 - club.members.length }} / 30
-              </span>
-            </template>
+            <div>Available Seats:</div>
+            <div class="">
+              <template v-if="club.members.length >= 30">
+                <span class="text-red-500 font-bold"> Currently full </span>
+              </template>
+              <template v-else>
+                <span class="text-sky-500 font-bold">
+                  {{ 30 - club.members.length }} / 30
+                </span>
+              </template>
+            </div>
 
-            <br />
-            Type:
-            <span class="text-sky-500 font-bold capitalize">{{
-              club.type
-            }}</span>
-            <br />
-            Required Trophies:
-            <span class="text-amber-500 font-bold capitalize">{{
-              club.requiredTrophies.toLocaleString()
-            }}</span>
+            <div>Type:</div>
+            <div>
+              <span class="text-sky-500 font-bold capitalize">{{
+                club.type
+              }}</span>
+            </div>
+            <div>Required Trophies:</div>
+            <div>
+              <span class="text-amber-500 font-bold capitalize">{{
+                club.requiredTrophies.toLocaleString()
+              }}</span>
+            </div>
           </div>
 
           <div>
@@ -127,6 +155,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <ClubTable v-if="members !== undefined" :members="members" :icons="icons" />
+    <ClubTable :members="members" />
   </div>
 </template>
