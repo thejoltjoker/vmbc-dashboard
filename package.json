@@ -9,12 +9,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:fetch": "npx ts-node ./fetch-data"
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^20.10.1",
     "axios": "^1.6.2",
     "flowbite": "^2.2.0",
     "moment": "^2.29.4",
+    "mongoose": "^8.0.2",
+    "ts-node": "^10.9.1",
     "vue": "^3.3.8",
     "vue-router": "4"
   },
@@ -26,7 +32,7 @@
     "prettier": "^3.1.0",
     "prettier-plugin-tailwindcss": "^0.5.7",
     "tailwindcss": "^3.3.5",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.2",
     "vite": "^5.0.0",
     "vue-tsc": "^1.8.22"
   }
