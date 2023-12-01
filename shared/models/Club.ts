@@ -30,4 +30,6 @@ const clubSchema: Schema<Club> = new Schema({
 
 const ClubModel = mongoose.model<Club>("Club", clubSchema);
 
-export { Club, ClubModel };
+// export { Club, ClubModel };
+export { ClubModel };
+export type { Club };

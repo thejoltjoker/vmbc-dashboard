@@ -3,11 +3,11 @@ import cron from "node-cron";
 import axios from "axios";
 import mongoose from "mongoose";
 import { parseISO } from "date-fns";
-import { ClubModel, Club } from "../shared/models/Club";
-import { PlayerModel, Player } from "../shared/models/Player";
-import { BattleLogModel, BattleLog } from "../shared/models/BattleLog";
-import { BattleModel, Battle } from "../shared/models/Battle";
-import { MemberModel, Member } from "../shared/models/Member";
+import { ClubModel, Club } from "./src/models/Club";
+import { PlayerModel, Player } from "./src/models/Player";
+import { BattleLogModel, BattleLog } from "./src/models/BattleLog";
+import { BattleModel, Battle } from "./src/models/Battle";
+import { MemberModel, Member } from "./src/models/Member";
 
 // Log the external IP address to determine Brawl Stars api key
 axios
