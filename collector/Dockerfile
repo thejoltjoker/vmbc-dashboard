@@ -12,6 +12,7 @@ RUN npm install
 
 # Copy the rest of the application files
 COPY . .
+COPY ../shared ../
 
 # Expose the port the app runs on
 EXPOSE 8080

@@ -1,117 +1,33 @@
-<!-- <script setup lang="ts">
-import { defineProps, ref, onMounted, computed, Ref } from "vue";
-
-import axios from "axios";
-import BattleLog from "../models/BattleLog";
-
-
-const props = defineProps(["member", "icons", "battles", "winRate"]);
-const defaultImageUrl = "https://cdn-old.brawlify.com/profile/28000000.png";
-const icon = ref(defaultImageUrl);
-
-
-const battles = ref([]); // Initialize battles as an empty array
-
-
-
-const winRateString: Ref<null | string> = ref(null);
-const lastBattleString: Ref<null | string> = ref(null);
-const hoursSinceLastBattle: Ref<null | number> = ref(null);
-
-// Fetch data from API
-onMounted(async () => {
-  try {
-    const url = `/api/player/${encodeURIComponent(props.member.tag)}/battles`;
-    const response = await axios.get(url);
-    icon.value = props.icons.player[props.member.icon.id]?.imageUrl;
-    battles.value = response.data.items; // Set the fetched battles
-    winRateString.value = `${Math.round(winRate.value * 100)}%`;
-    lastBattleString.value = timeAgoString(lastBattle.value.battleTime);
-    hoursSinceLastBattle.value = timeAgo(lastBattle.value.battleTime).asHours();
-  } catch (error) {
-    console.error("Error fetching data from the API", error);
-  }
-});
-</script> -->
 <script setup lang="ts">
-import { ref, onMounted, computed, Ref } from "vue";
-import axios from "axios";
+import { ref } from "vue";
+import _ from "lodash";
+import { formatDistanceToNow, parseISO } from "date-fns";
 import RoleBadge from "./RoleBadge.vue";
 import Spinner from "./Spinner.vue";
-import ClubMember from "../models/ClubMember";
 import PlayerIcon from "../models/brawlapi.PlayerIcon";
-import BattleLog from "../models/BattleLog";
-import { timeAgoString, timeAgo } from "../lib/utility";
+import { Member } from "../../shared/models/Member";
 
 const props = defineProps<{
-  member: ClubMember;
+  member: Member;
   icon: PlayerIcon;
 }>();
 
-// Define a reactive variable to store the fetched data
-const battles: Ref<BattleLog[]> = ref([]);
-const winRateString = ref("");
-const lastBattleString = ref("");
-const secondsSinceLastBattle = ref(0);
-
-/**
- * Calculates the win rate based on battle results.
- *
- * @returns {number} The win rate as a decimal value.
- */
-const winRate = computed(() => {
-  // Map battles to an array of boolean values indicating victory or top 3 rank
-  const results = battles.value.map((battle) =>
-    battle.battle.result === "victory" ||
-    (battle.battle.rank && battle.battle.rank <= 3)
-      ? true
-      : false,
-  );
-
-  // Calculate win rate by counting true values and dividing by total battles
-  const winRateResponse = results.filter(Boolean).length / battles.value.length;
-
-  return winRateResponse;
-});
-
-/**
- * Retrieves the details of the last recorded battle.
- *
- * @returns {BattleLog} The details of the last battle.
- */
-const lastBattle = computed((): BattleLog => {
-  // Use reduce to find the battle with the latest battle time
-  return battles.value.reduce(
-    (prev, current) => (prev.battleTime > current.battleTime ? prev : current),
-    battles.value[0],
-  );
-});
-
-// Define a function to fetch data from the API
-const fetchData = async () => {
-  try {
-    // Fetch battles to calculate win rate etc
-    const url = `${
-      import.meta.env.VITE_API_URL || ""
-    }/api/player/${encodeURIComponent(props.member.tag)}/battles`;
-    const response = await axios.get(url);
-    battles.value = response.data.items;
-
-    // Set stats
-    winRateString.value = `${Math.round(winRate.value * 100)}%`;
-    lastBattleString.value = timeAgoString(lastBattle.value.battleTime);
-    secondsSinceLastBattle.value = timeAgo(
-      lastBattle.value.battleTime,
-    ).asSeconds();
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
+const imageSrc = ref(
+  props.icon.imageUrl || "https://cdn-old.brawlify.com/profile/28000000.png",
+);
+const setDefaultImage = () => {
+  // Switch to a fallback image if the original image fails to load
+  imageSrc.value = "https://cdn-old.brawlify.com/profile/28000000.png";
 };
 
-// Use the onMounted lifecycle hook to fetch data when the component is mounted
-onMounted(() => {
-  fetchData();
-});
+// Define a reactive variable to store the fetched data
+const winRateString = ref(`${Math.round(props.member.winRate * 100)}%`);
+const lastBattleString = ref(
+  _.capitalize(
+    formatDistanceToNow(parseISO(props.member.lastPlayed), { addSuffix: true }),
+  ),
+);
+const secondsSinceLastBattle = ref(0);
 </script>
 
 <template>
@@ -120,10 +36,11 @@ onMounted(() => {
   >
     <th scope="row" class="p-3 w-20">
       <img
-        :src="props.icon.imageUrl"
+        :src="imageSrc"
         alt="icon"
         srcset=""
         class="w-full aspect-square"
+        onerror="this.onerror=null;this.src='https://cdn-old.brawlify.com/profile/28000000.png';"
       />
     </th>
     <td class="p-3">

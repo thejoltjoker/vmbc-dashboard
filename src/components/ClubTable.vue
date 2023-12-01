@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import ClubMember from "../models/ClubMember";
-
+import { Member } from "../../shared/models/Member";
 import ClubTableRow from "./ClubTableRow.vue";
 
 const props = defineProps<{
-  members: ClubMember[];
+  members: Member[];
 }>();
 
 // Icons

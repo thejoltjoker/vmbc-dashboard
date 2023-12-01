@@ -1,4 +1,6 @@
-import moment from "moment";
+import { formatDistanceToNow, differenceInMilliseconds } from "date-fns";
+import _ from "lodash";
+
 export const camelCaseToTitleCase = (input: string) => {
   // Use a regular expression to split the input string at uppercase letters
   // and then use the map function to capitalize the first letter of each word
@@ -13,28 +15,15 @@ export const camelCaseToKebabCase = (input: string) => {
   return input.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 };
 
-export const timeAgo = (timestamp: string): moment.Duration => {
-  const momentObject = moment(timestamp);
-  const duration = moment.duration(moment().diff(momentObject));
-  return duration;
+export const timeAgo = (timestamp: string): number => {
+  const date = new Date(timestamp);
+  const millisecondsDiff = differenceInMilliseconds(new Date(), date);
+  return millisecondsDiff;
 };
 
 export const timeAgoString = (timestamp: string): string => {
-  const momentObject = moment(timestamp);
-  const duration = moment.duration(moment().diff(momentObject));
+  const date = new Date(timestamp);
+  const timeAgo = _.capitalize(formatDistanceToNow(date, { addSuffix: true }));
 
-  const days: number = duration.asDays();
-  const hours: number = duration.asHours();
-  const minutes: number = duration.asMinutes();
-  const seconds: number = duration.asSeconds();
-
-  if (days > 1) {
-    return `${Math.floor(days)} days ago`;
-  } else if (hours > 1) {
-    return `${Math.floor(hours)} hours ago`;
-  } else if (minutes > 1) {
-    return `${Math.floor(minutes)} minutes ago`;
-  } else {
-    return `${Math.floor(seconds)} seconds ago`;
-  }
+  return timeAgo;
 };
