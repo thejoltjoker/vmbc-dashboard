@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@azure/functions": "^4.0.0",
+    "axios": "^1.6.2",
     "mongoose": "^8.0.2"
   },
   "devDependencies": {
