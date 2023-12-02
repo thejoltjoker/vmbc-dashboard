@@ -5,7 +5,8 @@ interface Battle extends Document {
   battleLogId: string;
   brawlerId: string;
   eventId: string;
-  clubMatch: boolean;
+  clubLeague: boolean;
+  megaPig: boolean;
   win: boolean;
   starPlayer: boolean;
 }
@@ -16,7 +17,8 @@ const battleSchema: Schema<Battle> = new Schema({
   battleLogId: { type: String, required: true },
   brawlerId: { type: String, required: true },
   eventId: { type: String, required: true },
-  clubMatch: { type: Boolean, required: true },
+  clubLeague: { type: Boolean, required: true },
+  megaPig: { type: Boolean, required: true },
   win: { type: Boolean, required: true },
   starPlayer: { type: Boolean, required: true },
 });

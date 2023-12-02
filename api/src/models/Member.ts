@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 interface Member extends Document {
-  iconId: number;
+  icon: { id: number };
   tag: string;
   name: string;
   trophies: number;
@@ -20,7 +20,7 @@ interface Member extends Document {
 
 const memberSchema: Schema<Member> = new Schema({
   _id: String,
-  iconId: { type: Number, required: true },
+  icon: { type: Object, required: true },
   tag: { type: String, required: true },
   name: { type: String, required: true },
   trophies: { type: Number, required: true },
@@ -43,4 +43,5 @@ const memberSchema: Schema<Member> = new Schema({
 
 const MemberModel = mongoose.model<Member>("Member", memberSchema);
 
-export { Member, MemberModel };
+export { MemberModel };
+export type { Member };
