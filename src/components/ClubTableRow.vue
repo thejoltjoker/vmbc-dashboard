@@ -5,7 +5,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import RoleBadge from "./RoleBadge.vue";
 import Spinner from "./Spinner.vue";
 import PlayerIcon from "../models/brawlapi.PlayerIcon";
-import { Member } from "../../shared/models/Member";
+import { Member } from "../../collector/src/models/Member";
 
 const props = defineProps<{
   member: Member;
@@ -15,16 +15,18 @@ const props = defineProps<{
 const imageSrc = ref(
   props.icon.imageUrl || "https://cdn-old.brawlify.com/profile/28000000.png",
 );
-const setDefaultImage = () => {
-  // Switch to a fallback image if the original image fails to load
-  imageSrc.value = "https://cdn-old.brawlify.com/profile/28000000.png";
-};
+// const setDefaultImage = () => {
+//   // Switch to a fallback image if the original image fails to load
+//   imageSrc.value = "https://cdn-old.brawlify.com/profile/28000000.png";
+// };
 
 // Define a reactive variable to store the fetched data
 const winRateString = ref(`${Math.round(props.member.winRate * 100)}%`);
 const lastBattleString = ref(
   _.capitalize(
-    formatDistanceToNow(parseISO(props.member.lastPlayed), { addSuffix: true }),
+    formatDistanceToNow(parseISO(`${props.member.lastPlayed}`), {
+      addSuffix: true,
+    }),
   ),
 );
 const secondsSinceLastBattle = ref(0);
