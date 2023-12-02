@@ -4,7 +4,7 @@ import RoleBadge from './RoleBadge.vue'
 import { round, capitalize } from 'lodash'
 import { formatDistanceToNow, parseISO } from 'date-fns'
 
-const props = defineProps(['member'])
+const props = defineProps(['member', 'icons'])
 const winRateString = `${round(props.member.winRate * 100)}%`
 const lastPlayedString = ref(
   capitalize(
@@ -13,7 +13,13 @@ const lastPlayedString = ref(
     })
   )
 )
-const defaultImage = ref('https://cdn-old.brawlify.com/profile/28000000.png')
+const defaultImage = 'https://cdn-old.brawlify.com/profile/28000000.png'
+console.log(props.icons.player[props.member.icon.id])
+const imageUrl = ref(props.icons.player[props.member.icon.id].imageUrl)
+const replaceByDefault = (e) => {
+  imageUrl.value = defaultImage
+  // return defaultImage
+}
 </script>
 
 <template>
@@ -25,11 +31,11 @@ const defaultImage = ref('https://cdn-old.brawlify.com/profile/28000000.png')
   >
     <th scope="row" class="p-3 w-20">
       <img
-        :src="defaultImage"
+        :src="imageUrl"
         alt="icon"
         srcset=""
         class="w-full aspect-square"
-        onerror="this.onerror=null;this.src=defaultImage;"
+        @error="replaceByDefault"
       />
     </th>
     <td class="p-3">

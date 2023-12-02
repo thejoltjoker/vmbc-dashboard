@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { sortBy } from 'lodash'
 import ClubTableRow from '@/components/ClubTableRow.vue'
 
-const props = defineProps(['members'])
+const props = defineProps(['members', 'icons'])
 
 const sortColumn = ref<string | null>(null)
 const sortDirection = ref<'asc' | 'desc'>('desc')
@@ -121,7 +121,7 @@ const sort = (column: string) => {
       </thead>
 
       <tbody>
-        <ClubTableRow v-for="member in sortedData" :key="member._id" :member="member" />
+        <ClubTableRow v-for="member in sortedData" :key="member._id" :member="member" :icons="icons"/>
       </tbody>
     </table>
   </div>

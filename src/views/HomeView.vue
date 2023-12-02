@@ -148,7 +148,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <ClubTable :members="members" />
+      <ClubTable :members="members" :icons="icons"/>
     </div>
   </div>
 </template>
