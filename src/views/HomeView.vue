@@ -5,6 +5,7 @@ import type { Icons } from '@/models/icon.model'
 import { computed, onMounted, ref } from 'vue'
 import { meanBy, round } from 'lodash'
 import axios from 'axios'
+import MainStatBox from './MainStatBox.vue'
 
 // Define variables
 
@@ -69,30 +70,35 @@ onMounted(() => {
     <div class="max-w-screen-xl mx-auto text-white px-3">
       <MainHeader :clubIcon="clubIcon" :club="club" />
       <div class="mb-6">
-        <div class="flex flex-row justify-stretch gap-3">
+        <div class="flex flex-col md:flex-row justify-stretch gap-3">
           <div
             class="grow grid grid-cols-2 uppercase text-stone-400 font-display text-4xl font-bold"
           >
-            <div class="mb-6">
-              <span class="text-amber-400 text-6xl">{{ club.trophies.toLocaleString() }}</span>
-              <br />
-              Total trophies
-            </div>
-            <div class="">
-              <span class="text-pink-500 text-6xl">{{ club.members.length }}</span>
-              <br />
-              Members
-            </div>
-            <div class="">
-              <span class="text-sky-400 text-6xl">{{ avgWinRate }}</span>
-              <br />
-              Avg. win rate
-            </div>
-            <div class="">
-              <span class="text-violet-500 text-6xl">100%</span>
-              <br />
-              Chill
-            </div>
+            <MainStatBox
+              key="statBoxTrophies"
+              :title="club.trophies.toLocaleString()"
+              description="Total trophies"
+              titleColor="text-amber-500"
+            />
+
+            <MainStatBox
+              key="statBoxMembers"
+              :title="club.members.length"
+              description="Members"
+              titleColor="text-pink-500"
+            />
+            <MainStatBox
+              key="statBoxWinRate"
+              :title="avgWinRate"
+              description="Avg. win rate"
+              titleColor="text-sky-500"
+            />
+            <MainStatBox
+              key="statBoxChill"
+              title="100%"
+              description="Chill"
+              titleColor="text-violet-500"
+            />
           </div>
           <div class="grow shrink flex flex-col justify-between">
             <div class="text-stone-400 grid grid-cols-2">
@@ -148,7 +154,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <ClubTable :members="members" :icons="icons"/>
+      <ClubTable :members="members" :icons="icons" />
     </div>
   </div>
 </template>

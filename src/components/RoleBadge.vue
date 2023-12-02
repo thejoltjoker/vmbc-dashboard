@@ -3,7 +3,7 @@ import { startCase } from 'lodash'
 const props = defineProps(['role'])
 
 const getRoleClass = (role: any) => {
-  let classList = 'text-zinc-900 px-2.5 py-0.5 rounded-full'
+  let classList = 'text-zinc-900 px-2.5 py-0.5 rounded-full inline-block'
   switch (role) {
     case 'member':
       return classList + ' bg-zinc-500'
@@ -21,5 +21,7 @@ const getRoleClass = (role: any) => {
 </script>
 
 <template>
-  <span :class="getRoleClass(props.role)">{{ startCase(props.role) }}</span>
+  <div :class="getRoleClass(props.role)">
+    {{ startCase(props.role) }}
+  </div>
 </template>
