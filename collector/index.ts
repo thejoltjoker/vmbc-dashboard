@@ -127,13 +127,12 @@ cron.schedule(process.env.CRON_STRING || "*/15 * * * *", async () => {
     // Disconnect from MongoDB after operations
   } catch (error: any) {
     console.error("Error:", error.message);
-  } finally {
-    if (mongoose.connection.readyState == 1) {
-      setTimeout(async () => {
-        console.log("Disconnecting from DB");
-        await mongoose.disconnect();
-      }, 2000);
-    }
+  }
+  if (mongoose.connection.readyState == 1) {
+    setTimeout(async () => {
+      console.log("Disconnecting from DB");
+      await mongoose.disconnect();
+    }, 10000);
   }
 });
 // };

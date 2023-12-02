@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=16.0.0"
   },
   "scripts": {
     "dev": "vite",
@@ -13,20 +13,16 @@
     "db:fetch": "npx ts-node ./fetch-data"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.202",
     "@types/node": "^20.10.1",
     "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "flowbite": "^2.2.0",
-    "moment": "^2.29.4",
     "mongoose": "^8.0.2",
-    "ts-node": "^10.9.1",
     "vue": "^3.3.8",
     "vue-router": "4"
   },
   "devDependencies": {
     "@azure/static-web-apps-cli": "^1.1.6",
-    "@types/date-fns": "^2.6.0",
     "@types/lodash": "^4.14.202",
     "@vitejs/plugin-vue": "^4.5.0",
     "autoprefixer": "^10.4.16",

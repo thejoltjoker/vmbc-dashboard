@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios from "axios";
 import { ref, onMounted } from "vue";
-import { Member } from "../../shared/models/Member";
+import { Member } from "../../collector/src/models/Member";
 import ClubTableRow from "./ClubTableRow.vue";
 
 const props = defineProps<{

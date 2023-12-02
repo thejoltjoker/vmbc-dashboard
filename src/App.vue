@@ -18,7 +18,7 @@ const fetchData = async () => {
 <script setup lang="ts">
 import ClubTable from "./components/ClubTable.vue";
 import Club from "./models/Club";
-import { Member } from "../shared/models/Member";
+import { Member } from "../collector/src/models/Member";
 import MainHeader from "./components/MainHeader.vue";
 import { ref, onMounted, computed } from "vue";
 import _ from "lodash";
