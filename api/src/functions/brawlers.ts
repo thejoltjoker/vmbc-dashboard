@@ -1,22 +1,19 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
-import mongoose from 'mongoose'
-import Member from '../models/member.model'
-export async function members(
+import axios from 'axios'
+export async function brawlers(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   try {
-    const mongoURL = process.env.MONGO_URL as string
-    await mongoose.connect(mongoURL)
+    const response = await axios.get('https://api.brawlapi.com/v1/brawlers', {
+      headers: { 'Cache-Control': 'max-age=600' }
+    })
 
-    // Store data in MongoDB
-    const response = await Member.find()
-
-    // await mongoose.disconnect()
-    return { jsonBody: response }
+    // Assuming the response should be returned in the success case
+    return { jsonBody: response.data.list }
   } catch (error) {
     // Log the error for debugging purposes
-    context.error(`Error fetching data: ${error.message}`)
+    context.error(`Error fetching brawlers: ${error.message}`)
 
     // Return an appropriate error response with a string body
     return {
@@ -26,8 +23,8 @@ export async function members(
   }
 }
 
-app.http('members', {
+app.http('brawlers', {
   methods: ['GET'],
   authLevel: 'anonymous',
-  handler: members
+  handler: brawlers
 })

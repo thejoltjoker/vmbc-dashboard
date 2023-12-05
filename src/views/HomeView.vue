@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import ClubTable from '@/components/ClubTable.vue'
 import MainHeader from '@/components/MainHeader.vue'
 import type { Icons } from '@/models/icon.model'
 import { computed, onMounted, ref } from 'vue'
 import { meanBy, round } from 'lodash'
 import axios from 'axios'
-import MainStatBox from './MainStatBox.vue'
-import DiscordButton from './DiscordButton.vue'
+import MainStatBox from '@/components/MainStatBox.vue'
+import DiscordButton from '@/components/DiscordButton.vue'
+import ClubList from '@/components/ClubList.vue'
 
 // Define variables
 
@@ -42,19 +42,50 @@ const fetchMembers = async () => {
 }
 
 const fetchIcons = async () => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL || ''}/api/icons`)
-    icons.value = response.data
-  } catch (error) {
-    console.error('Error fetching data:', error)
+  if (localStorage.icons) {
+    console.log('Getting icons from local storage')
+    icons.value = JSON.parse(localStorage.icons)
+  } else {
+    console.log('Getting icons from api')
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || ''}/api/icons`)
+      icons.value = response.data
+      localStorage.icons = JSON.stringify(icons.value)
+    } catch (error) {
+      console.error('Error fetching brawlers data:', error)
+    }
   }
+  // try {
+  //   const response = await axios.get(`${import.meta.env.VITE_API_URL || ''}/api/icons`)
+  //   icons.value = response.data
+  // } catch (error) {
+  //   console.error('Error fetching data:', error)
+  // }
 }
 
+// const fetchData = async () => {
+//   try {
+//     await fetchClub()
+//     await fetchIcons()
+//     await fetchMembers()
+//     clubIcon.value = icons.value.club[club.value.badgeId]
+//   } catch (error) {
+//     console.error('Error fetching data:', error)
+//   }
+// }
 const fetchData = async () => {
   try {
-    await fetchClub()
-    await fetchIcons()
-    await fetchMembers()
+    const [iconsResponse, clubResponse, membersResponse] = await Promise.all([
+      // axios.get(`${import.meta.env.VITE_API_URL || ''}/api/icons`),
+      fetchIcons(),
+      axios.get(`${import.meta.env.VITE_API_URL || ''}/api/club`),
+      axios.get(`${import.meta.env.VITE_API_URL || ''}/api/members`)
+    ])
+
+    // icons.value = iconsResponse.data
+    club.value = clubResponse.data
+    members.value = membersResponse.data
+
     clubIcon.value = icons.value.club[club.value.badgeId]
   } catch (error) {
     console.error('Error fetching data:', error)
@@ -79,27 +110,25 @@ onMounted(() => {
               key="statBoxTrophies"
               :title="club.trophies.toLocaleString()"
               description="Total trophies"
-              titleColor="text-amber-500"
+              titleColor="amber"
             />
 
             <MainStatBox
               key="statBoxMembers"
               :title="club.members.length"
               description="Members"
-              titleColor="text-pink-500"
+              titleColor="pink"
             />
             <MainStatBox
               key="statBoxWinRate"
               :title="avgWinRate"
               description="Avg. win rate"
-              titleColor="text-sky-500"
+              titleColor="sky"
             />
-            <MainStatBox
-              key="statBoxChill"
-              title="100%"
-              description="Chill"
-              titleColor="text-violet-500"
-            />
+            <div
+              class="from-amber-400 to-amber-500 from-sky-400 to-sky-500 from-violet-400 to-violet-500 from-pink-400 to-pink-500 hidden"
+            ></div>
+            <MainStatBox key="statBoxChill" title="100%" description="Chill" titleColor="violet" />
           </div>
           <div class="grow shrink flex flex-col justify-between mb-6">
             <div class="text-stone-400 grid grid-cols-2">
@@ -135,8 +164,9 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <ClubTable :members="members" :icons="icons" />
+      <ClubList :members="members" :icons="icons" />
+
+      <!-- <ClubTable :members="members" :icons="icons" /> -->
     </div>
   </div>
 </template>
-@/models/icon.model

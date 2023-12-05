@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .grid-area-template-club-list {
+    grid-template-areas:
+      'icon name trophies'
+      'icon name win-rate';
+  }
+  .grid-area-template-club-list-md {
+    grid-template-areas:
+      'icon name role trophies win-rate last-played'
+      'icon name role trophies win-rate last-played';
+  }
+
+  .grid-area-icon {
+    grid-area: icon;
+  }
+  .grid-area-name {
+    grid-area: name;
+  }
+  .grid-area-role {
+    grid-area: role;
+  }
+  .grid-area-trophies {
+    grid-area: trophies;
+  }
+  .grid-area-win-rate {
+    grid-area: win-rate;
+  }
+  .grid-area-last-played {
+    grid-area: last-played;
+  }
+
+  .text-gradient {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

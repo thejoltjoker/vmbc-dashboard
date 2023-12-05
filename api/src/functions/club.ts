@@ -12,7 +12,7 @@ export async function club(
     // Store data in MongoDB
     const response = await Club.findOne()
 
-    await mongoose.disconnect()
+    // await mongoose.disconnect()
     return { jsonBody: response }
   } catch (error) {
     // Log the error for debugging purposes

@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 
 const props = defineProps(['title', 'description', 'titleColor'])
-const titleClasses = ref('text-4xl md:text-6xl ' + props.titleColor)
+const titleClasses = ref(
+  `text-4xl md:text-6xl bg-gradient-to-br from-${props.titleColor}-400 to-${props.titleColor}-500 text-gradient`
+)
 </script>
 
 <template>

@@ -1,7 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
 import mongoose from 'mongoose'
-import Member from '../models/member.model'
-export async function members(
+import Player from '../models/player.model'
+export async function player(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
@@ -10,7 +10,7 @@ export async function members(
     await mongoose.connect(mongoURL)
 
     // Store data in MongoDB
-    const response = await Member.find()
+    const response = await Player.findOne({ tag: request.params.tag })
 
     // await mongoose.disconnect()
     return { jsonBody: response }
@@ -26,8 +26,9 @@ export async function members(
   }
 }
 
-app.http('members', {
+app.http('player', {
   methods: ['GET'],
   authLevel: 'anonymous',
-  handler: members
+  route: 'player/{tag}',
+  handler: player
 })

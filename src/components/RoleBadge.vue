@@ -3,7 +3,7 @@ import { startCase } from 'lodash'
 const props = defineProps(['role'])
 
 const getRoleClass = (role: any) => {
-  let classList = 'text-zinc-900 px-2.5 py-0.5 rounded-full inline-block'
+  let classList = 'text-zinc-900 px-2 py-0.5 text-xs md:text-sm rounded-full inline-block'
   switch (role) {
     case 'member':
       return classList + ' bg-zinc-500'
