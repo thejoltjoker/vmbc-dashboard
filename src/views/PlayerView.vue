@@ -43,7 +43,8 @@ const brawlers = ref<Brawler[]>([])
 const error = ref(null)
 const fetchPlayer = async () => {
   const url =
-    `${import.meta.env.VITE_API_URL || ''}/api/player/` + encodeURIComponent(route.params.tag)
+    `${import.meta.env.VITE_API_URL || ''}/api/player/` +
+    encodeURIComponent(route.params.tag as string)
   axios
     .get('../../scrap/GCPV9Q8QY.json')
     .then((response) => {
@@ -72,7 +73,8 @@ const fetchData = async () => {
   loading.value = true
   try {
     const playerUrl =
-      `${import.meta.env.VITE_API_URL || ''}/api/player/` + encodeURIComponent(route.params.tag)
+      `${import.meta.env.VITE_API_URL || ''}/api/player/` +
+      encodeURIComponent(route.params.tag as string)
     const [iconsResponse, brawlersResponse, playerResponse] = await Promise.all([
       fetchIcons(),
       axios.get(`${import.meta.env.VITE_API_URL || ''}/api/brawlers`),
