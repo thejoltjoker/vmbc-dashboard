@@ -103,6 +103,7 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
           _id: battleId,
           playerTag: member.tag,
           battleLogId: battleLogId,
+          battleTime: battleLog.battleTime,
           brawlerId: getBrawlerIdFromBattleLog(member.tag, battleLog),
           eventId: battleLog.event.id,
           clubLeague: null, //Because no more club league
