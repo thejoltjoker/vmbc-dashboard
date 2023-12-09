@@ -5,7 +5,7 @@ import ClubListMember from '@/components/ClubListMember.vue'
 
 const props = defineProps(['members', 'icons'])
 
-const sortColumn = ref<string>('trophies')
+const sortColumn = ref<string>('lastPlayed')
 const sortDirection = ref<'asc' | 'desc'>('desc')
 
 // Use a computed property to handle sorting

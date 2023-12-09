@@ -11,6 +11,9 @@ export default {
       gridTemplateColumns: {
         'club-list': '4rem minmax(4rem, 2fr) 1fr',
         'club-list-md': '4rem minmax(4rem, 2fr) repeat(4, minmax(0, 1fr))'
+      },
+      borderWidth: {
+        3: '3px'
       }
     }
   },

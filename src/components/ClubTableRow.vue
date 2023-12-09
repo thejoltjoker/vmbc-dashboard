@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, ref } from 'vue'
-import RoleBadge from './RoleBadge.vue'
+
+import BadgeRole from '@/components/badges/BadgeRole.vue'
 import Spinner from './Spinner.vue'
 import { round, capitalize } from 'lodash'
 import { formatDistanceToNow, parseISO } from 'date-fns'
@@ -41,11 +42,11 @@ const replaceByDefault = () => {
       <h3>{{ props.member.name }}</h3>
       <p class="hidden md:block opacity-20">{{ props.member.tag }}</p>
       <div class="md:hidden">
-        <RoleBadge :role="props.member.role" :key="props.member.tag + props.member.role" />
+        <BadgeRole :role="props.member.role" :key="props.member.tag + props.member.role" />
       </div>
     </td>
     <td class="p-2 md:p-3 bg-zinc-800 group-hover:bg-zinc-700 hidden md:table-cell">
-      <RoleBadge :role="props.member.role" :key="props.member.tag + props.member.role" />
+      <BadgeRole :role="props.member.role" :key="props.member.tag + props.member.role" />
     </td>
 
     <td class="p-2 md:p-3 bg-zinc-800 group-hover:bg-zinc-700">

@@ -7,9 +7,12 @@ import axios from 'axios'
 import MainStatBox from '@/components/MainStatBox.vue'
 import DiscordButton from '@/components/DiscordButton.vue'
 import ClubList from '@/components/ClubList.vue'
+import LoadingPage from '@/components/LoadingPage.vue'
 
+// For loading screen
+const loading = ref(false)
+const error = ref<any>(null)
 // Define variables
-
 const icons = ref<Icons>({ player: {}, club: {} })
 const club = ref({ trophies: 0, members: [], requiredTrophies: 0, badgeId: '0', type: 'Unknown' })
 const members = ref([])
@@ -22,24 +25,6 @@ const avgWinRate = computed(() => {
   const avgString = `${round(avg * 100)}%`
   return avg ? avgString : 'N/A'
 })
-
-const fetchClub = async () => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL || ''}/api/club`)
-    club.value = response.data
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  }
-}
-
-const fetchMembers = async () => {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL || ''}/api/members`)
-    members.value = response.data
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  }
-}
 
 const fetchIcons = async () => {
   if (localStorage.icons) {
@@ -74,6 +59,7 @@ const fetchIcons = async () => {
 //   }
 // }
 const fetchData = async () => {
+  loading.value = true
   try {
     const [iconsResponse, clubResponse, membersResponse] = await Promise.all([
       // axios.get(`${import.meta.env.VITE_API_URL || ''}/api/icons`),
@@ -84,11 +70,14 @@ const fetchData = async () => {
 
     // icons.value = iconsResponse.data
     club.value = clubResponse.data
+
     members.value = membersResponse.data
 
     clubIcon.value = icons.value.club[club.value.badgeId]
-  } catch (error) {
-    console.error('Error fetching data:', error)
+    loading.value = false
+  } catch (err) {
+    console.error('Error fetching data:', err)
+    error.value = err
   }
 }
 
@@ -98,7 +87,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="app">
+  <div v-if="loading" class="loading w-full h-full">
+    <LoadingPage />
+  </div>
+
+  <div v-if="error" class="error">{{ error }}</div>
+
+  <div v-if="club.trophies > 0" class="content">
     <div class="max-w-screen-xl mx-auto text-white px-3">
       <MainHeader :clubIcon="clubIcon" :club="club" />
       <div class="mb-6">

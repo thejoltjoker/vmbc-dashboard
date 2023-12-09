@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import Spinner from './Spinner.vue'
 import { defineProps, ref } from 'vue'
-import RoleBadge from './RoleBadge.vue'
+import RoleBadge from '@/components/badges/BadgeRole.vue'
 import { round, capitalize } from 'lodash'
 import { formatDistanceToNow, parseISO, subHours, isAfter } from 'date-fns'
 
