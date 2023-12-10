@@ -8,10 +8,12 @@ import MainStatBox from '@/components/MainStatBox.vue'
 import DiscordButton from '@/components/DiscordButton.vue'
 import ClubList from '@/components/ClubList.vue'
 import LoadingPage from '@/components/LoadingPage.vue'
+import { useFavicon } from '@vueuse/core'
 
 // For loading screen
 const loading = ref(false)
 const error = ref<any>(null)
+
 // Define variables
 const icons = ref<Icons>({ player: {}, club: {} })
 const club = ref({ trophies: 0, members: [], requiredTrophies: 0, badgeId: '0', type: 'Unknown' })
@@ -25,6 +27,9 @@ const avgWinRate = computed(() => {
   const avgString = `${round(avg * 100)}%`
   return avg ? avgString : 'N/A'
 })
+
+const favicon = useFavicon()
+favicon.value = 'https://cdn-old.brawlify.com/club/8000000.png'
 
 const fetchIcons = async () => {
   if (localStorage.icons) {
@@ -74,6 +79,8 @@ const fetchData = async () => {
     members.value = membersResponse.data
 
     clubIcon.value = icons.value.club[club.value.badgeId]
+    // Set Favicon
+    favicon.value = clubIcon.value.imageUrl
     loading.value = false
   } catch (err) {
     console.error('Error fetching data:', err)
