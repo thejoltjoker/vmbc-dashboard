@@ -13,6 +13,12 @@
       'icon name role trophies win-rate last-played'
       'icon name role trophies win-rate last-played';
   }
+  .grid-area-template-brawler-list {
+    grid-template-areas: 'icon name rank power trophies';
+  }
+  .grid-area-template-brawler-list-md {
+    grid-template-areas: 'icon name rank power trophies powerups';
+  }
 
   .grid-area-icon {
     grid-area: icon;
@@ -31,6 +37,9 @@
   }
   .grid-area-last-played {
     grid-area: last-played;
+  }
+  .grid-area-powerups {
+    grid-area: powerups;
   }
 
   .text-gradient {

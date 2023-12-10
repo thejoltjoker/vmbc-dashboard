@@ -6,11 +6,14 @@ import { useRoute } from 'vue-router'
 import type { Player } from '@/models/player.model'
 import type { Icons } from '@/models/icon.model'
 import type { Brawler } from '@/models/brawler.model'
-import PlayerBrawlerListItem from '@/components/player/PlayerBrawlerListItem.vue'
+import PlayerBrawlerList from '@/components/player/PlayerBrawlerList.vue'
 import PlayerHeader from '@/components/PlayerHeader.vue'
 import { getRoboRumbleLevel } from '@/lib/utilities'
 import PlayerStatsItem from '@/components/player/PlayerStatsItem.vue'
 import LoadingPage from '@/components/LoadingPage.vue'
+import PlayerStatsWins from '@/components/player/PlayerStatsWins.vue'
+import PlayerStatsExp from '@/components/player/PlayerStatsExp.vue'
+import PlayerStatsTrophies from '@/components/player/PlayerStatsTrophies.vue'
 
 const route = useRoute()
 
@@ -46,8 +49,10 @@ const fetchData = async () => {
       // axios.get(`${import.meta.env.VITE_API_URL || ''}/api/icons`),
       axios.get(playerUrl)
     ])
-    // icons.value = iconsResponse.data
+
     brawlers.value = brawlersResponse.data
+    // Get brawler win rate
+
     player.value = playerResponse.data
     loading.value = false
   } catch (err: any) {
@@ -60,9 +65,7 @@ const fetchData = async () => {
     _.get(icons.value?.player, `${player.value?.icon.id}`)?.imageUrl ||
     'https://cdn-old.brawlify.com/profile/28000000.png'
 }
-const playerNameColor = computed(() => {
-  return `#${player.value?.nameColor.slice(-6)}`
-})
+
 // Watch the params of the route to fetch the data again
 watch(
   () => route.params,
@@ -86,8 +89,8 @@ watch(
         :tag="player.tag"
         :nameColor="player.nameColor"
       />
-      <div class="grid md:grid-cols-2 gap-3 mb-2">
-        <div
+      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-3 mb-2">
+        <!-- <div
           class="grid grid-cols-2 gap-3 items-center transition rounded-md overflow-hidden bg-zinc-800 hover:bg-zinc-700 p-2 md:p-3 mb-1"
         >
           <PlayerStatsItem title="Trophies" :value="player.trophies.toLocaleString()" emoji="🏆" />
@@ -127,32 +130,19 @@ watch(
             :value="getRoboRumbleLevel(player.bestRoboRumbleTime)"
             emoji="🤖"
           />
-        </div>
-        <div
-          class="grid grid-cols-2 gap-3 items-center transition rounded-md overflow-hidden bg-zinc-800 hover:bg-zinc-700 p-2 md:p-3 mb-1"
-        >
-          <PlayerStatsItem
-            title="Last Played"
-            :value="player.highestTrophies.toLocaleString()"
-            emoji="🟢"
-          />
-          <PlayerStatsItem title="Trophies" :value="player.trophies.toLocaleString()" emoji="🏆" />
-          <PlayerStatsItem title="Brawlers" :value="`${player.brawlers.length}/67`" emoji="👾" />
-        </div>
+        </div> -->
+
+        <PlayerStatsTrophies :player="player" />
+        <PlayerStatsExp :player="player" />
+        <PlayerStatsWins :player="player" />
       </div>
-      <h3 class="font-display uppercase text-4xl pt-3 font-bold">
+      <h3 class="font-display uppercase text-2xl md:text-4xl pt-3 font-bold">
         Brawlers
         <span class="opacity-30 font-sans text-lg font-normal"
           >({{ player.brawlers.length }}/67)</span
         >
       </h3>
-      <ul>
-        <PlayerBrawlerListItem
-          v-for="brawler in player.brawlers"
-          :brawler="brawler"
-          :key="brawler.id"
-        />
-      </ul>
+      <PlayerBrawlerList :brawlers="player.brawlers" />
     </div>
   </div>
 </template>
