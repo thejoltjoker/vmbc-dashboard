@@ -5,11 +5,9 @@ import PlayerBrawlerListItem from '@/components/player/PlayerBrawlerListItem.vue
 import type { PlayerBrawler } from '@/models/player.model'
 import IconSort from '@/components/icons/IconSort.vue'
 
-const props = defineProps<{
-  brawlers: PlayerBrawler[]
-}>()
+const props = defineProps(['brawlers'])
 
-const sortColumn = ref<string>('lastPlayed')
+const sortColumn = ref('trophies')
 const sortDirection = ref<'asc' | 'desc'>('desc')
 
 // Use a computed property to handle sorting
