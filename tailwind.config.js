@@ -5,7 +5,7 @@ export default {
     extend: {
       fontFamily: {
         emoji: ['Noto Color Emoji', 'sans-serif'],
-        display: ['Teko'],
+        display: ['Teko', 'sans-serif'],
         sans: ['Work Sans', 'sans-serif']
       },
       gridTemplateColumns: {

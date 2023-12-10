@@ -1,33 +1,8 @@
 <script setup lang="ts">
+import type { Player } from '@/models/player.model'
+
 defineProps<{
-  player: {
-    tag: string
-    name: string
-    nameColor: string
-    icon: { id: number }
-    trophies: number
-    highestTrophies: number
-    expLevel: number
-    expPoints: number
-    isQualifiedFromChampionshipChallenge: boolean
-    '3vs3Victories': number
-    soloVictories: number
-    duoVictories: number
-    bestRoboRumbleTime: number
-    bestTimeAsBigBrawler: number
-    club: { tag: string; name: string }
-    brawlers: {
-      id: number
-      name: string
-      power: number
-      rank: number
-      trophies: number
-      highestTrophies: number
-      gears: { id: number; name: string; level: number }[]
-      starPowers: { id: number; name: string }[]
-      gadgets: { id: number; name: string }[]
-    }[]
-  }
+  player: Player
 }>()
 </script>
 
