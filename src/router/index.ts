@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import PlayerView from '../views/PlayerView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,7 +13,8 @@ const router = createRouter({
     {
       path: '/player/:tag',
       name: 'player',
-      component: () => import('../views/PlayerView.vue')
+      // component: () => import('../views/PlayerView.vue')
+      component: PlayerView
     }
   ]
 })
