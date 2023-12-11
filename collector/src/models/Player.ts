@@ -8,6 +8,8 @@ interface PlayerBrawler {
   trophies: number
   highestTrophies: number
   winRate?: number
+  totalWins?: number
+  totalBattles?: number
   gears: {
     id: number
     name: string
@@ -55,6 +57,8 @@ const playerBrawlerSchema = new Schema<PlayerBrawler>({
   trophies: { type: Number, required: true },
   highestTrophies: { type: Number, required: true },
   winRate: { type: Number, default: 0 },
+  totalWins: { type: Number, default: 0 },
+  totalBattles: { type: Number, default: 0 },
   gears: [
     {
       id: { type: Number, required: true },

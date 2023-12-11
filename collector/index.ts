@@ -40,9 +40,11 @@ const lastBattle = (battleLogs: BattleLog[]): BattleLog => {
 interface BrawlerWinRateAggregation {
   _id: string
   brawlerId: string
+  totalWins: number
+  totalBattles: number
   winRate: number
 }
-const getBrawlerWinRates = async (playerTag: string): Promise<BrawlerWinRateAggregation[]> => {
+const getBrawlerBattleInfo = async (playerTag: string): Promise<BrawlerWinRateAggregation[]> => {
   const pipeline = [
     {
       $match: {
@@ -52,29 +54,29 @@ const getBrawlerWinRates = async (playerTag: string): Promise<BrawlerWinRateAggr
     {
       $group: {
         _id: '$brawlerId',
-        totalMatches: {
-          $sum: 1
-        },
-        wins: {
+        totalWins: {
           $sum: {
-            $cond: ['$win', 1, 0]
+            $cond: [
+              {
+                $eq: ['$win', true]
+              },
+              1,
+              0
+            ]
           }
+        },
+        totalBattles: {
+          $sum: 1
         }
       }
     },
     {
       $project: {
         brawlerId: '$_id',
+        totalWins: '$totalWins',
+        totalBattles: '$totalBattles',
         winRate: {
-          $cond: {
-            if: {
-              $eq: ['$totalMatches', 0]
-            },
-            then: 0,
-            else: {
-              $divide: ['$wins', '$totalMatches']
-            }
-          }
+          $divide: ['$totalWins', '$totalBattles']
         }
       }
     }
@@ -130,13 +132,15 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
       console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
 
       // Get brawler win rates
-      console.log(`[${prefix}] Storing brawler win rates`)
-      const winRates = await getBrawlerWinRates(member.tag)
+      console.log(`[${prefix}] Storing brawler battle information`)
+      const battleInfo = await getBrawlerBattleInfo(member.tag)
 
-      player.brawlers.forEach(
-        (brawler) =>
-          (brawler.winRate = winRates.find((item) => item.brawlerId == `${brawler.id}`)?.winRate)
-      )
+      player.brawlers.forEach((brawler) => {
+        const data = battleInfo.find((item) => item.brawlerId == `${brawler.id}`)
+        brawler.winRate = data?.winRate
+        brawler.totalWins = data?.totalWins
+        brawler.totalBattles = data?.totalBattles
+      })
 
       await PlayerModel.updateOne({ _id: player.tag }, player, {
         upsert: true
