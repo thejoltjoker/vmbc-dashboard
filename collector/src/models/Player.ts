@@ -1,78 +1,80 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose'
 
 interface PlayerBrawler {
-  id: number;
-  name: string;
-  power: number;
-  rank: number;
-  trophies: number;
-  highestTrophies: number;
+  id: number
+  name: string
+  power: number
+  rank: number
+  trophies: number
+  highestTrophies: number
+  winRate?: number
   gears: {
-    id: number;
-    name: string;
-    level: number;
-  }[];
+    id: number
+    name: string
+    level: number
+  }[]
   starPowers: {
-    id: number;
-    name: string;
-  }[];
+    id: number
+    name: string
+  }[]
   gadgets: {
-    id: number;
-    name: string;
-  }[];
+    id: number
+    name: string
+  }[]
 }
 
 interface Player extends Document {
-  tag: string;
-  name: string;
-  nameColor: string;
+  tag: string
+  name: string
+  nameColor: string
   icon: {
-    id: number;
-  };
-  trophies: number;
-  highestTrophies: number;
-  expLevel: number;
-  expPoints: number;
-  isQualifiedFromChampionshipChallenge: boolean;
-  "3vs3Victories": number;
-  soloVictories: number;
-  duoVictories: number;
-  bestRoboRumbleTime: number;
-  bestTimeAsBigBrawler: number;
+    id: number
+  }
+  trophies: number
+  highestTrophies: number
+  expLevel: number
+  expPoints: number
+  isQualifiedFromChampionshipChallenge: boolean
+  '3vs3Victories': number
+  soloVictories: number
+  duoVictories: number
+  bestRoboRumbleTime: number
+  bestTimeAsBigBrawler: number
   club: {
-    tag: string;
-    name: string;
-  };
-  brawlers: PlayerBrawler[];
+    tag: string
+    name: string
+  }
+  brawlers: PlayerBrawler[]
 }
 
-const playerBrawlerSchema: Schema<PlayerBrawler> = new Schema({
-  id: Number,
-  name: String,
-  power: Number,
-  rank: Number,
-  trophies: Number,
-  highestTrophies: Number,
+const playerBrawlerSchema = new Schema<PlayerBrawler>({
+  id: { type: Number, required: true },
+  name: { type: String, required: true },
+  power: { type: Number, required: true },
+  rank: { type: Number, required: true },
+  trophies: { type: Number, required: true },
+  highestTrophies: { type: Number, required: true },
+  winRate: { type: Number, default: 0 },
   gears: [
     {
-      id: Number,
-      name: String,
-      level: Number,
-    },
+      id: { type: Number, required: true },
+      name: { type: String, required: true },
+      level: { type: Number, required: true }
+    }
   ],
   starPowers: [
     {
-      id: Number,
-      name: String,
-    },
+      id: { type: Number, required: true },
+      name: { type: String, required: true }
+    }
   ],
   gadgets: [
     {
-      id: Number,
-      name: String,
-    },
-  ],
-});
+      id: { type: Number, required: true },
+      name: { type: String, required: true }
+    }
+  ]
+})
 
 const playerSchema: Schema<Player> = new Schema({
   _id: String,
@@ -80,25 +82,25 @@ const playerSchema: Schema<Player> = new Schema({
   name: String,
   nameColor: String,
   icon: {
-    id: Number,
+    id: Number
   },
   trophies: Number,
   highestTrophies: Number,
   expLevel: Number,
   expPoints: Number,
   isQualifiedFromChampionshipChallenge: Boolean,
-  "3vs3Victories": Number,
+  '3vs3Victories': Number,
   soloVictories: Number,
   duoVictories: Number,
   bestRoboRumbleTime: Number,
   bestTimeAsBigBrawler: Number,
   club: {
     tag: String,
-    name: String,
+    name: String
   },
-  brawlers: [playerBrawlerSchema],
-});
+  brawlers: [playerBrawlerSchema]
+})
 
-const PlayerModel = mongoose.model<Player>("Player", playerSchema);
+const PlayerModel = mongoose.model<Player>('Player', playerSchema)
 
-export { Player, PlayerModel };
+export { Player, PlayerModel }

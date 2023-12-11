@@ -37,40 +37,86 @@ const lastBattle = (battleLogs: BattleLog[]): BattleLog => {
     battleLogs[0]
   )
 }
-
+interface BrawlerWinRateAggregation {
+  _id: string
+  brawlerId: string
+  winRate: number
+}
+const getBrawlerWinRates = async (playerTag: string): Promise<BrawlerWinRateAggregation[]> => {
+  const pipeline = [
+    {
+      $match: {
+        playerTag: playerTag
+      }
+    },
+    {
+      $group: {
+        _id: '$brawlerId',
+        totalMatches: {
+          $sum: 1
+        },
+        wins: {
+          $sum: {
+            $cond: ['$win', 1, 0]
+          }
+        }
+      }
+    },
+    {
+      $project: {
+        brawlerId: '$_id',
+        winRate: {
+          $cond: {
+            if: {
+              $eq: ['$totalMatches', 0]
+            },
+            then: 0,
+            else: {
+              $divide: ['$wins', '$totalMatches']
+            }
+          }
+        }
+      }
+    }
+  ]
+  return await BattleModel.aggregate<BrawlerWinRateAggregation>(pipeline)
+}
+let prefix = ''
 // Run every 15 minutes
 cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
+  prefix = 'DB'
   try {
     // Define your MongoDB connection URL
     const mongoURL = process.env.MONGO_URL as string
 
     // Connect to MongoDB
-    console.log('Connecting to DB')
+    console.log(`[${prefix}] Connecting to DB`)
     await mongoose.connect(mongoURL)
   } catch (error) {
     console.error(error)
   }
   // const start = async () => {
   try {
+    prefix = 'club'
     // Get club data
     const clubData: Club = await getClub()
 
     // Store data in MongoDB
-    console.log(`Storing club ${clubData.name} (${clubData.tag})`)
+    console.log(`[${prefix}] Storing club ${clubData.name} (${clubData.tag})`)
     await ClubModel.updateOne({ _id: clubData.tag }, clubData, {
       upsert: true
     })
 
     // Delete all non club players
     const memberTags = clubData.members.map((member) => member.tag)
-    console.log(`Deleting non member players`)
+    console.log(`[${prefix}] Deleting non member players`)
     await PlayerModel.deleteMany({
       tag: {
         $nin: memberTags
       }
     })
     // Delete all non club players
-    console.log(`Deleting non members`)
+    console.log(`[${prefix}] Deleting non members`)
     await MemberModel.deleteMany({
       tag: {
         $nin: memberTags
@@ -78,9 +124,20 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
     })
 
     for (const member of clubData.members) {
+      prefix = `Player: ${member.tag}`
       const player: Player = await getPlayer(member.tag)
 
-      console.log(`Storing player ${player.name} (${player.tag})`)
+      console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
+
+      // Get brawler win rates
+      console.log(`[${prefix}] Storing brawler win rates`)
+      const winRates = await getBrawlerWinRates(member.tag)
+
+      player.brawlers.forEach(
+        (brawler) =>
+          (brawler.winRate = winRates.find((item) => item.brawlerId == `${brawler.id}`)?.winRate)
+      )
+
       await PlayerModel.updateOne({ _id: player.tag }, player, {
         upsert: true
       })
@@ -88,7 +145,7 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
       // Get battle logs for player
       const battleLogs: BattleLog[] = await getBattleLogs(member.tag)
 
-      console.log(` + Storing battle logs`)
+      console.log(`[${prefix}] Storing battle logs`)
       battleLogs.forEach(async (battleLog: BattleLog) => {
         const battleLogId = battleTimeToUnix(battleLog.battleTime as string)
         battleLog.battleTime = parseISO(battleLog.battleTime as string)
@@ -124,7 +181,7 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
         lastPlayed: lastBattle(battleLogs).battleTime,
         ...member
       })
-      console.log(` + Storing member`)
+      console.log(`[${prefix}] Storing member`)
       await MemberModel.updateOne({ _id: member.tag }, memberData, {
         upsert: true
       })
@@ -136,7 +193,8 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
   }
   if (mongoose.connection.readyState == 1) {
     setTimeout(async () => {
-      console.log('Disconnecting from DB')
+      prefix = 'DB'
+      console.log(`[${prefix}] Disconnecting from DB`)
       await mongoose.disconnect()
     }, 10000)
   }
