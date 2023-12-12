@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer utilities {
+  .construction-striped {
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0) 20px,
+      rgba(0, 0, 0, 1) 20px,
+      rgba(0, 0, 0, 1) 40px
+    );
+  }
   .grid-area-template-club-list {
     grid-template-areas:
       'icon name trophies'

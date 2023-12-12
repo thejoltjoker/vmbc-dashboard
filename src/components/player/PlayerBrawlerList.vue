@@ -45,23 +45,23 @@ const sort = (column: string) => {
     <div class="w-16 hidden md:block">Icon</div>
     <div @click="sort('name')" class="pl-2 inline-flex items-center cursor-pointer">
       Name
-      <IconSort />
+      <IconSort class="w-3 h-3 ms-0.5" />
     </div>
     <div @click="sort('rank')" class="inline-flex items-center cursor-pointer">
       Rank
-      <IconSort />
+      <IconSort class="w-3 h-3 ms-0.5" />
     </div>
     <div @click="sort('power')" class="inline-flex items-center cursor-pointer">
       Power
-      <IconSort />
+      <IconSort class="w-3 h-3 ms-0.5" />
     </div>
     <div @click="sort('trophies')" class="inline-flex items-center cursor-pointer">
       Trophies
-      <IconSort />
+      <IconSort class="w-3 h-3 ms-0.5" />
     </div>
     <div @click="sort('winRate')" class="inline-flex items-center cursor-pointer">
       Win rate
-      <IconSort />
+      <IconSort class="w-3 h-3 ms-0.5" />
     </div>
     <div class="hidden md:inline-flex items-center">Powerups</div>
   </div>
