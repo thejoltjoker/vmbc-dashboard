@@ -26,7 +26,7 @@ const replaceByDefault = () => {
 <template>
   <RouterLink :to="'/player/' + encodeURIComponent(member.tag)">
     <li
-      class="transition grid grid-cols-club-list grid-area-template-club-list md:grid-area-template-club-list-md md:grid-cols-club-list-md rounded-md overflow-hidden bg-zinc-800 hover:bg-zinc-700 p-2 md:p-3 mb-1"
+      class="transition grid grid-cols-club-list grid-area-template-club-list sm:grid-area-template-club-list-md sm:grid-cols-club-list-md rounded-md overflow-hidden bg-zinc-800 hover:bg-zinc-700 p-2 sm:p-3 mb-1"
     >
       <div class="w-16 grid-area-icon">
         <img
@@ -47,13 +47,13 @@ const replaceByDefault = () => {
           ></div>
         </div>
 
-        <p class="hidden md:block opacity-20">{{ props.member.tag }}</p>
-        <div class="md:hidden">
+        <p class="hidden sm:block opacity-20">{{ props.member.tag }}</p>
+        <div class="sm:hidden">
           <RoleBadge :role="props.member.role" :key="props.member.tag + props.member.role" />
         </div>
       </div>
 
-      <div class="hidden grid-area-role md:flex items-center">
+      <div class="hidden grid-area-role sm:flex items-center">
         <RoleBadge :role="props.member.role" :key="props.member.tag + props.member.role" />
       </div>
 
@@ -72,7 +72,7 @@ const replaceByDefault = () => {
         ></span>
       </div>
 
-      <div class="hidden md:inline-flex items-center text-zinc-300 grid-area-last-played">
+      <div class="hidden sm:inline-flex items-center text-zinc-300 grid-area-last-played">
         <span class="font-emoji pr-1">🎮</span>
         <span class=""
           ><template v-if="lastPlayedString !== ''">

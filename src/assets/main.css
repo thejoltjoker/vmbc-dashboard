@@ -14,10 +14,12 @@
       'icon name role trophies win-rate last-played';
   }
   .grid-area-template-brawler-list {
-    grid-template-areas: 'icon name rank power trophies';
+    grid-template-areas:
+      'icon name rank power trophies'
+      'icon name rank power win-rate';
   }
   .grid-area-template-brawler-list-md {
-    grid-template-areas: 'icon name rank power trophies powerups';
+    grid-template-areas: 'icon name rank power trophies win-rate powerups';
   }
 
   .grid-area-icon {
@@ -28,6 +30,12 @@
   }
   .grid-area-role {
     grid-area: role;
+  }
+  .grid-area-rank {
+    grid-area: rank;
+  }
+  .grid-area-power {
+    grid-area: power;
   }
   .grid-area-trophies {
     grid-area: trophies;

@@ -47,6 +47,7 @@ interface Player extends Document {
     name: string
   }
   brawlers: PlayerBrawler[]
+  winRate?: number
 }
 
 const playerBrawlerSchema = new Schema<PlayerBrawler>({
@@ -102,7 +103,8 @@ const playerSchema: Schema<Player> = new Schema({
     tag: String,
     name: String
   },
-  brawlers: [playerBrawlerSchema]
+  brawlers: [playerBrawlerSchema],
+  winRate: { type: Number, default: 0 },
 })
 
 const PlayerModel = mongoose.model<Player>('Player', playerSchema)

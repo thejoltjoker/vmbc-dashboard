@@ -9,6 +9,7 @@ import { BattleLogModel, BattleLog } from './src/models/BattleLog'
 import { BattleModel } from './src/models/Battle'
 import { MemberModel } from './src/models/Member'
 
+
 // Log the external IP address to determine Brawl Stars api key
 axios
   .get('https://api.ipify.me')
@@ -127,9 +128,16 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
 
     for (const member of clubData.members) {
       prefix = `Player: ${member.tag}`
+
+      // Get player
       const player: Player = await getPlayer(member.tag)
+      // Get battle logs for player
+      const battleLogs: BattleLog[] = await getBattleLogs(member.tag)
 
       console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
+
+      // Store player win rate
+      player.winRate = winRate(battleLogs)
 
       // Get brawler win rates
       console.log(`[${prefix}] Storing brawler battle information`)
@@ -145,9 +153,6 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
       await PlayerModel.updateOne({ _id: player.tag }, player, {
         upsert: true
       })
-
-      // Get battle logs for player
-      const battleLogs: BattleLog[] = await getBattleLogs(member.tag)
 
       console.log(`[${prefix}] Storing battle logs`)
       battleLogs.forEach(async (battleLog: BattleLog) => {

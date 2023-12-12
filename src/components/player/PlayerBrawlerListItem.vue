@@ -76,6 +76,10 @@ onMounted(async () => {
 
       {{ props.brawler.trophies }}
     </div>
+    <div class="inline-flex items-center gap-1 grid-area-win-rate">
+      <span class="font-emoji pr-1">🥇</span>
+      {{ _.round((props.brawler.winRate ?? 0) * 100) }}%
+    </div>
     <div class="hidden md:block grid-area-powerups">
       <ul class="inline-flex">
         <!-- Gadgets -->

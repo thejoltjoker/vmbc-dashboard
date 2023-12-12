@@ -6,7 +6,7 @@ defineProps(['warningMembers'])
 <template>
   <BoxRed>
     <div class="p-5 flex flex-col gap-3 justify-between h-full">
-      <p class="uppercase font-medium text-red-900 text-sm">Warning zone</p>
+      <p class="uppercase font-medium text-red-900 text-sm">Danger zone</p>
       <p
         v-for="warningMember in warningMembers"
         :key="warningMember.tag + 'warning'"

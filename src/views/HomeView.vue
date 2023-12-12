@@ -2,27 +2,19 @@
 import MainHeader from '@/components/MainHeader.vue'
 import type { Icons } from '@/models/icon.model'
 import { computed, onMounted, ref } from 'vue'
-import {
-  format,
-  formatDistance,
-  formatDuration,
-  intervalToDuration,
-  isAfter,
-  isBefore,
-  parseISO,
-  subDays,
-  subHours
-} from 'date-fns'
-import { meanBy, round } from 'lodash'
+import { useStorage } from '@vueuse/core'
+import { formatDistanceToNow, isBefore, parseISO, subDays } from 'date-fns'
+import _ from 'lodash'
 import axios from 'axios'
 import MainStatBox from '@/components/MainStatBox.vue'
-import DiscordButton from '@/components/DiscordButton.vue'
 import ClubList from '@/components/ClubList.vue'
 import LoadingPage from '@/components/LoadingPage.vue'
 import { useFavicon } from '@vueuse/core'
 import BoxGray from '@/components/boxes/BoxGray.vue'
+import FooterMain from '@/components/FooterMain.vue'
+// import type { Member } from '@/models/member.model'
 
-import type { Member } from '@/models/member.model'
+import type { Member } from '@vmbc-dashboard/shared/models/member.model'
 import HomeWarningMembers from './HomeWarningMembers.vue'
 
 // For loading screen
@@ -37,9 +29,11 @@ const clubIcon = ref({
   id: 0,
   imageUrl: ''
 })
+// returns Ref<string>
 const avgWinRate = computed(() => {
-  const avg = meanBy(members.value, 'winRate')
-  const avgString = `${round(avg * 100)}%`
+  const avg = _.meanBy(members.value, 'winRate')
+  localStorage.setItem('avgWinRate', avg.toString())
+  const avgString = `${_.round(avg * 100)}%`
   return avg ? avgString : 'N/A'
 })
 const warningMembers = ref<Member[]>([])
@@ -152,7 +146,97 @@ onMounted(() => {
             ></div>
             <MainStatBox key="statBoxChill" title="100%" description="Chill" titleColor="violet" />
           </div>
+          <!-- <BoxGray>
+            <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full bg-event-heist">
+              <div class="inline-flex justify-between w-full">
+                <p class="uppercase font-medium text-violet-400 text-sm">Heist</p>
+                <p class="uppercase font-medium text-zinc-500 text-sm">Event</p>
+              </div>
 
+              <div class="inline-flex gap-3 items-center">
+                <div class="w-20 h-20">
+                  <img src="https://cdn-old.brawlify.com/gamemode/Heist.png" alt="" class="-mt-1" />
+                </div>
+
+                <p class="font-display uppercase font-bold text-white text-6xl">Hot Potato</p>
+              </div>
+
+              <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
+                <div class="text-cyan-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-5 h-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+
+                <p class="text-zinc-500 text-sm">
+                  Next event
+                  <span class="text-white">
+                    {{
+                      formatDistanceToNow(parseISO('2023-12-11T14:00:00.000Z'), {
+                        addSuffix: true
+                      })
+                    }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </BoxGray> -->
+          <!-- <BoxGray>
+            <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full bg-event-knockout">
+              <div class="inline-flex justify-between w-full">
+                <p class="uppercase font-medium text-red-400 text-sm">Knockout</p>
+                <p class="uppercase font-medium text-zinc-500 text-sm">Event</p>
+              </div>
+
+              <div class="inline-flex gap-3 items-center">
+                <div class="w-20 h-20">
+                  <img
+                    src="https://cdn-old.brawlify.com/gamemode/Knockout.png"
+                    alt=""
+                    class="-mt-1"
+                  />
+                </div>
+                <p class="font-display uppercase font-bold text-white text-6xl">Flaring Phoenix</p>
+              </div>
+
+              <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
+                <div class="text-cyan-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-5 h-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+
+                <p class="text-zinc-500 text-sm">
+                  Next event
+                  <span class="text-white">
+                    {{
+                      formatDistanceToNow(parseISO('2023-12-11T14:00:00.000Z'), {
+                        addSuffix: true
+                      })
+                    }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </BoxGray> -->
           <BoxGray>
             <div class="p-5 flex flex-col gap-3 justify-between h-full">
               <p class="uppercase font-medium text-zinc-500 text-sm">Club status</p>
@@ -215,4 +299,43 @@ onMounted(() => {
       <!-- <ClubTable :members="members" :icons="icons" /> -->
     </div>
   </div>
+  <FooterMain />
 </template>
+<style>
+.bg-event-heist {
+  position: relative;
+}
+.bg-event-heist:before {
+  position: absolute;
+  content: ' ';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.1;
+  background-image: url('https://cdn-old.brawlify.com/gamemode/header/Heist.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+.bg-event-knockout {
+  position: relative;
+}
+.bg-event-knockout:before {
+  position: absolute;
+  content: ' ';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.1;
+  background-image: url('https://cdn-old.brawlify.com/gamemode/header/Knockout.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+</style>

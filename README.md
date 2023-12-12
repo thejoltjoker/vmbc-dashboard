@@ -23,6 +23,7 @@
   - [Feature Requests](#feature-requests)
   - [Pull Requests](#pull-requests)
 - [License](#license)
+- [Credits](#credits)
 
 
 
@@ -167,3 +168,7 @@ Please make sure to follow the existing coding style and include relevant tests 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 
+## Credits
+- [Brawlapi](https://brawlapi.com/) for player icons, events, brawler info etc.
+- [Fontawesome](https://fontawesome.com/) for icons.
+- [Heroicons](https://heroicons.com/) for icons.

@@ -40,9 +40,9 @@ const sort = (column: string) => {
 </script>
 
 <template>
-  <div class="flex justify-between md:grid md:grid-cols-club-list-md w-full p-2 md:p-3">
-    <div class="w-16 hidden md:block">Icon</div>
-    <div @click="sort('name')" class="pl-2 inline-flex items-center cursor-pointer">
+  <div class="flex justify-between md:grid md:grid-cols-club-list-md w-full p-2 sm:p-3">
+    <div class="w-16 hidden sm:block">Icon</div>
+    <div @click="sort('name')" class="md:pl-2 inline-flex items-center cursor-pointer">
       Name
       <svg
         class="w-3 h-3 ms-1.5"
@@ -56,7 +56,7 @@ const sort = (column: string) => {
         />
       </svg>
     </div>
-    <div @click="sort('role')" class="hidden md:inline-flex items-center cursor-pointer">
+    <div @click="sort('role')" class="hidden sm:inline-flex items-center cursor-pointer">
       Role
       <svg
         class="w-3 h-3 ms-1.5"
@@ -98,7 +98,7 @@ const sort = (column: string) => {
         />
       </svg>
     </div>
-    <div @click="sort('lastPlayed')" class="hidden md:inline-flex items-center cursor-pointer">
+    <div @click="sort('lastPlayed')" class="hidden sm:inline-flex items-center cursor-pointer">
       Last played
       <svg
         class="w-3 h-3 ms-1.5"

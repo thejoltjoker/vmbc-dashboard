@@ -59,7 +59,11 @@ const sort = (column: string) => {
       Trophies
       <IconSort />
     </div>
-    <div class="hidden md:inline-flex items-center cursor-pointer">Powerups</div>
+    <div @click="sort('winRate')" class="inline-flex items-center cursor-pointer">
+      Win rate
+      <IconSort />
+    </div>
+    <div class="hidden md:inline-flex items-center">Powerups</div>
   </div>
 
   <ul>

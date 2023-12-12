@@ -5,6 +5,9 @@ export interface PlayerBrawler {
   rank: number
   trophies: number
   highestTrophies: number
+  winRate: number
+  totalWins: number
+  totalBattles: number
   gears: {
     id: number
     name: string
@@ -42,4 +45,5 @@ export interface Player {
     name: string
   }
   brawlers: PlayerBrawler[]
+  winRate: number
 }

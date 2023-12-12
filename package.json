@@ -2,8 +2,10 @@
   "name": "vmbc-dashboard",
   "version": "0.0.0",
   "private": true,
+  "workspaces": ["api","shared","collector"],
   "scripts": {
     "dev": "vite",
+    "dev:api": "concurrently 'pnpm run dev' 'cd api && npm run start'",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "preview:azure": "pnpm run build && swa start dist --api-location api",
@@ -13,8 +15,10 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@vmbc-dashboard/shared": "workspace:*",
     "@vueuse/core": "^10.7.0",
     "axios": "^1.6.2",
+    "concurrently": "^8.2.2",
     "date-fns": "^2.30.0",
     "lodash": "^4.17.21",
     "mongoose": "^8.0.2",

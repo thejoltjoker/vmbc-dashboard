@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
 import mongoose from 'mongoose'
-import Player from '../models/player.model'
+import Battle from '../models/battle.model'
 export async function playerBrawlers(
   request: HttpRequest,
   context: InvocationContext
@@ -10,47 +10,36 @@ export async function playerBrawlers(
     await mongoose.connect(mongoURL)
 
     // Store data in MongoDB
-    const response = await Player.findOne({ tag: request.params.tag })
+    const pipeline = [
+      {
+        $match: {
+          playerTag: request.params.tag
+        }
+      },
+      {
+        $group: {
+          _id: '$brawlerId',
+          totalWins: {
+            $sum: {
+              $cond: ['$win', 1, 0]
+            }
+          },
+          totalBattles: {
+            $sum: 1
+          }
+        }
+      },
+      {
+        $project: {
+          brawlerId: '$_id',
+          winRate: {
+            $divide: ['$totalWins', '$totalBattles']
+          }
+        }
+      }
+    ]
+    const response = await Battle.aggregate(pipeline)
 
-    // YourModel.aggregate([
-    //     {
-    //       $match: {
-    //         playerTag: '#Y8JLQYRQP'
-    //       }
-    //     },
-    //     {
-    //       $group: {
-    //         _id: '$brawlerId',
-    //         totalWins: {
-    //           $sum: {
-    //             $cond: ['$win', 1, 0]
-    //           }
-    //         },
-    //         totalBattles: {
-    //           $sum: 1
-    //         }
-    //       }
-    //     },
-    //     {
-    //       $project: {
-    //         _id: 0,
-    //         brawlerId: '$_id',
-    //         winRate: {
-    //           $divide: ['$totalWins', '$totalBattles']
-    //         }
-    //       }
-    //     }
-    //   ], (err, result) => {
-    //     if (err) {
-    //       console.error(err);
-    //       // Handle error
-    //     } else {
-    //       console.log(result);
-    //       // Process the result
-    //     }
-    //   });
-
-    // await mongoose.disconnect()
     return { jsonBody: response }
   } catch (error) {
     // Log the error for debugging purposes
