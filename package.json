@@ -15,7 +15,6 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@vmbc-dashboard/shared": "workspace:*",
     "@vueuse/core": "^10.7.0",
     "axios": "^1.6.2",
     "concurrently": "^8.2.2",
