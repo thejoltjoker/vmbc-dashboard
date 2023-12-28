@@ -1,5 +1,4 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
-import { Battle } from '@vmbc-dashboard/shared/models/battle.model'
 export async function ping(
   request: HttpRequest,
   context: InvocationContext

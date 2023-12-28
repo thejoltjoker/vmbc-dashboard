@@ -226,11 +226,11 @@ watch(
           <div class="p-5 flex flex-col gap-3 justify-between h-full">
             <p class="uppercase font-medium text-zinc-500 text-sm">Win Rate</p>
             <p class="font-display font-bold text-white text-6xl">
-              {{ _.round(player.winRate * 100)
+              {{ _.round(player?.winRate ?? 0 * 100)
               }}<span class="font-normal text-2xl opacity-50">%</span>
             </p>
             <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
-              <template v-if="player.winRate > avgWinRate">
+              <template v-if="player?.winRate ?? 0 > avgWinRate">
                 <div class="text-green-500">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -246,7 +246,7 @@ watch(
 
                 <p class="text-zinc-500 text-sm">
                   <span class="text-white">
-                    {{ _.round((player.winRate - avgWinRate) * 100) }}%
+                    {{ _.round(((player?.winRate ?? 0) - avgWinRate) * 100) }}%
                   </span>
                   better than club average
                 </p>
@@ -267,7 +267,7 @@ watch(
 
                 <p class="text-zinc-500 text-sm">
                   <span class="text-white">
-                    {{ _.round((avgWinRate - player.winRate) * 100) }}%
+                    {{ _.round((avgWinRate - (player?.winRate ?? 0)) * 100) }}%
                   </span>
                   lower than club average
                 </p>

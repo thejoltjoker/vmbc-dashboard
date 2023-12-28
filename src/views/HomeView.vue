@@ -13,7 +13,7 @@ import _ from 'lodash'
 import { computed, onMounted, ref } from 'vue'
 // import type { Member } from '@/models/member.model'
 
-import type { Member } from '@vmbc-dashboard/shared/models/member.model'
+import type { Member } from '@/../shared/models/member.model'
 import HomeWarningMembers from './HomeWarningMembers.vue'
 
 // For loading screen
