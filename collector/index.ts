@@ -6,9 +6,10 @@ import { parseISO } from 'date-fns'
 import { ClubModel, Club } from './src/models/Club'
 import { PlayerModel, Player } from './src/models/Player'
 import { BattleLogModel, BattleLog } from './src/models/BattleLog'
-import { BattleModel } from './src/models/Battle'
+// import { BattleModel } from './src/models/Battle'
 import { MemberModel } from './src/models/Member'
-
+import BattleModel, { Battle } from './src/models/battle.model'
+import _ from 'lodash'
 
 // Log the external IP address to determine Brawl Stars api key
 axios
@@ -17,6 +18,8 @@ axios
   .catch((error) => {
     console.error('Error retrieving external IP address:', error.message)
   })
+
+console.log('Version:', process.env.npm_package_version)
 
 const winRate = (battleLogs: BattleLog[]): number => {
   // Map battles to an array of boolean values indicating victory or top 3 rank
@@ -85,6 +88,7 @@ const getBrawlerBattleInfo = async (playerTag: string): Promise<BrawlerWinRateAg
   return await BattleModel.aggregate<BrawlerWinRateAggregation>(pipeline)
 }
 let prefix = ''
+
 // Run every 15 minutes
 cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
   prefix = 'DB'
@@ -126,13 +130,20 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
       }
     })
 
+    // Iterate over the members
     for (const member of clubData.members) {
-      prefix = `Player: ${member.tag}`
+      const tag = member.tag
+      let isFirstBattleLog = true
+      let winStreak = 0
+      let starPlayerStreak = 0
+
+      prefix = `Player: ${tag}`
 
       // Get player
-      const player: Player = await getPlayer(member.tag)
+      const player: Player = await getPlayer(tag)
+
       // Get battle logs for player
-      const battleLogs: BattleLog[] = await getBattleLogs(member.tag)
+      const battleLogs: BattleLog[] = await getBattleLogs(tag)
 
       console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
 
@@ -141,7 +152,7 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
 
       // Get brawler win rates
       console.log(`[${prefix}] Storing brawler battle information`)
-      const battleInfo = await getBrawlerBattleInfo(member.tag)
+      const battleInfo = await getBrawlerBattleInfo(tag)
 
       player.brawlers.forEach((brawler) => {
         const data = battleInfo.find((item) => item.brawlerId == `${brawler.id}`)
@@ -155,43 +166,68 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
       })
 
       console.log(`[${prefix}] Storing battle logs`)
-      battleLogs.forEach(async (battleLog: BattleLog) => {
+      for (const battleLog of _.sortBy(battleLogs, [(b) => b.battleTime])) {
         const battleLogId = battleTimeToUnix(battleLog.battleTime as string)
         battleLog.battleTime = parseISO(battleLog.battleTime as string)
-
+        console.log(`[${prefix}] Storing battle log: ${battleLog.battleTime.toISOString()}`)
         await BattleLogModel.updateOne({ _id: battleLogId }, battleLog, {
           upsert: true
         })
 
         // Store battle in player battles
-        const battleId = `${member.tag}_${battleLogId}`
+        const battleId = `${tag}_${battleLogId}`
+
+        // Get win streak and star player streak from first battle in current logs
+        if (isFirstBattleLog) {
+          const firstBattle = await BattleModel.findOne({ playerTag: tag })
+            .sort({ battleTime: -1 })
+            .limit(1)
+          winStreak = firstBattle?.winStreak ?? 0
+          starPlayerStreak = firstBattle?.starPlayerStreak ?? 0
+        } else {
+          winStreak = isBattleLogWin(battleLog) ? winStreak + 1 : 0
+          starPlayerStreak = isStarPlayer(tag, battleLog) ? starPlayerStreak + 1 : 0
+        }
+
+        console.log(
+          `[${prefix}] Win: ${isBattleLogWin(
+            battleLog
+          )} (${winStreak}) | Star player: ${isStarPlayer(tag, battleLog)} (${starPlayerStreak})`
+        )
+
         const battleData = new BattleModel({
           _id: battleId,
-          playerTag: member.tag,
+          playerTag: tag,
           battleLogId: battleLogId,
           battleTime: battleLog.battleTime,
-          brawlerId: getBrawlerIdFromBattleLog(member.tag, battleLog),
+          brawlerId: getBrawlerIdFromBattleLog(tag, battleLog),
           eventId: battleLog.event.id,
           clubLeague: null, //Because no more club league
           megaPig: isMegaPig(battleLog),
           win: isBattleLogWin(battleLog),
-          starPlayer: isStarPlayer(member.tag, battleLog)
+          starPlayer: isStarPlayer(tag, battleLog),
+          winStreak: winStreak,
+          starPlayerStreak: starPlayerStreak
         })
 
         await BattleModel.updateOne({ _id: battleId }, battleData, {
           upsert: true
         })
-      })
+        isFirstBattleLog = false
+      }
+      // battleLogs.forEach(async (battleLog: BattleLog) => {
+
+      // })
 
       // Store members with win rate and last played battle for dashboard
       const memberData = new MemberModel({
-        _id: member.tag,
+        _id: tag,
         winRate: winRate(battleLogs),
         lastPlayed: lastBattle(battleLogs).battleTime,
         ...member
       })
       console.log(`[${prefix}] Storing member`)
-      await MemberModel.updateOne({ _id: member.tag }, memberData, {
+      await MemberModel.updateOne({ _id: tag }, memberData, {
         upsert: true
       })
     }
@@ -321,5 +357,11 @@ async function getBattleLogs(tag: string): Promise<BattleLog[]> {
   )
 
   const data = response.data.items
+  return data
+}
+
+async function getLatestBattle(tag: string): Promise<Battle | null> {
+  const data = await BattleModel.findOne({ playerTag: tag }).sort({ battleTime: -1 }).limit(1)
+
   return data
 }
