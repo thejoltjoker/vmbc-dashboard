@@ -9,7 +9,7 @@ import BoxGray from '@/components/boxes/BoxGray.vue'
         <slot name="title">Default title</slot>
       </h4>
 
-      <div class="inline-flex gap-2 items-center">
+      <div class="font-display uppercase font-bold text-white text-6xl">
         <slot name="content"></slot>
       </div>
 
