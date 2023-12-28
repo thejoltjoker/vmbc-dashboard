@@ -1,20 +1,18 @@
 <script setup lang="ts">
+import type { Player, PlayerBrawler } from '@/../shared/models/player.model'
+import LoadingPage from '@/components/LoadingPage.vue'
+import PlayerHeader from '@/components/PlayerHeader.vue'
+import BoxGray from '@/components/boxes/BoxGray.vue'
+import PlayerBrawlerList from '@/components/player/PlayerBrawlerList.vue'
+import PlayerStatsStarPlayerStreak from '@/components/player/PlayerStatsStarPlayerStreak.vue'
+import PlayerStatsWinStreak from '@/components/player/PlayerStatsWinStreak.vue'
+import type { Brawler } from '@/models/brawler.model'
+import type { Icons } from '@/models/icon.model'
+import { useStorage, useTitle } from '@vueuse/core'
 import axios from 'axios'
 import _ from 'lodash'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import type { Player, PlayerBrawler } from '@/models/player.model'
-import type { Icons } from '@/models/icon.model'
-import type { Brawler } from '@/models/brawler.model'
-import PlayerBrawlerList from '@/components/player/PlayerBrawlerList.vue'
-import PlayerHeader from '@/components/PlayerHeader.vue'
-import BoxGray from '@/components/boxes/BoxGray.vue'
-import LoadingPage from '@/components/LoadingPage.vue'
-import { useStorage } from '@vueuse/core'
-// import PlayerStatsWins from '@/components/player/PlayerStatsWins.vue'
-// import PlayerStatsExp from '@/components/player/PlayerStatsExp.vue'
-// import PlayerStatsTrophies from '@/components/player/PlayerStatsTrophies.vue'
-import { useTitle } from '@vueuse/core'
 const route = useRoute()
 
 const loading = ref(false)
@@ -104,53 +102,7 @@ watch(
         :tag="player.tag"
         :nameColor="player.nameColor"
       />
-      <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-1 md:gap-3 mb-2">
-        <!-- <div
-          class="grid grid-cols-2 gap-3 items-center transition rounded-md overflow-hidden bg-zinc-800 hover:bg-zinc-700 p-2 md:p-3 mb-1"
-        >
-          <PlayerStatsItem title="Trophies" :value="player.trophies.toLocaleString()" emoji="🏆" />
-          <PlayerStatsItem
-            :title="_.startCase('highestTrophies')"
-            :value="player.highestTrophies.toLocaleString()"
-            emoji="🏆"
-          />
-          <PlayerStatsItem
-            title="Experience Level"
-            :value="player.expLevel.toLocaleString()"
-            emoji="🎖️"
-          />
-          <PlayerStatsItem
-            title="Experience Points"
-            :value="player.expPoints.toLocaleString()"
-            emoji="🪙"
-          />
-          <PlayerStatsItem
-            :title="_.startCase('soloVictories')"
-            :value="player.soloVictories.toLocaleString()"
-            emoji="🏆"
-          />
 
-          <PlayerStatsItem
-            :title="_.startCase('duoVictories')"
-            :value="player.duoVictories.toLocaleString()"
-            emoji="👯‍♀️"
-          />
-          <PlayerStatsItem
-            title="3 vs 3 Victories"
-            :value="player['3vs3Victories'].toLocaleString()"
-            emoji="☘️"
-          />
-          <PlayerStatsItem
-            title="Best Robo Rumble"
-            :value="getRoboRumbleLevel(player.bestRoboRumbleTime)"
-            emoji="🤖"
-          />
-        </div> -->
-
-        <!-- <PlayerStatsTrophies :player="player" /> -->
-        <!-- <PlayerStatsExp :player="player" /> -->
-        <!-- <PlayerStatsWins :player="player" /> -->
-      </div>
       <div class="grid md:grid-cols-2 gap-2 my-2">
         <BoxGray>
           <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full">
@@ -261,10 +213,12 @@ watch(
                 {{ player.soloVictories.toLocaleString() }}
               </p>
             </div>
-            <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10 justify-between">
+            <div
+              class="grid grid-cols-3 gap-2 border-t-[1px] pt-2 border-zinc-100/10 justify-between"
+            >
               <p class="text-zinc-500 text-sm">Solo</p>
-              <p class="text-zinc-500 text-sm">Duo</p>
-              <p class="text-zinc-500 text-sm">3 vs 3</p>
+              <p class="text-zinc-500 text-sm text-center">Duo</p>
+              <p class="text-zinc-500 text-sm text-end">3 vs 3</p>
             </div>
           </div>
         </BoxGray>
@@ -321,39 +275,8 @@ watch(
             </div>
           </div>
         </BoxGray>
-        <!-- <BoxGray>
-          <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full">
-            <p class="uppercase font-medium text-zinc-500 text-sm">Solo victories</p>
-
-            <p class="font-display uppercase font-bold text-white text-6xl mt-2">
-              {{ player.soloVictories.toLocaleString() }}
-            </p>
-
-            <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
-              <div class="text-sky-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-5 h-5 stroke-green-500 stroke-2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                  />
-                </svg>
-              </div>
-
-              <p class="text-zinc-500 text-sm">
-                <span class="text-white"> 21 </span>
-                in the last 7 days
-              </p>
-            </div>
-          </div>
-        </BoxGray> -->
+        <PlayerStatsWinStreak :player="player" />
+        <PlayerStatsStarPlayerStreak :player="player" />
         <BoxGray>
           <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full">
             <p class="uppercase font-medium text-zinc-500 text-sm">Top brawler</p>
@@ -440,42 +363,6 @@ watch(
             </div>
           </div>
         </BoxGray>
-
-        <!-- <BoxGray>
-          <div class="p-5 flex flex-col gap-3 justify-between h-full">
-            <p class="uppercase font-medium text-zinc-500 text-sm">Time in battle</p>
-            <p class="font-display font-bold text-white text-6xl">
-              {{ format(new Date(2342 * 1000), 'HH:mm:ss') }}
-            </p>
-            <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 stroke-green-500 stroke-2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                />
-              </svg>
-
-              <p class="text-zinc-500 text-sm">
-                <span class="text-white">
-                  {{
-                    formatDuration(intervalToDuration({ start: 0, end: 23442 * 1000 }), {
-                      delimiter: ', '
-                    })
-                  }}
-                </span>
-                more than last week
-              </p>
-            </div>
-          </div>
-        </BoxGray> -->
       </div>
       <h3 class="font-display uppercase text-2xl md:text-4xl pt-3 font-bold">
         Brawlers

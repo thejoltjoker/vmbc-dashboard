@@ -16,7 +16,7 @@ const lastPlayedString = ref(
   )
 )
 const defaultImage = 'https://cdn-old.brawlify.com/profile/28000000.png'
-const imageUrl = ref(props.icons.player[props.member.icon.id].imageUrl)
+const imageUrl = ref(props.icons.player[props.member.icon.id]?.imageUrl ?? defaultImage)
 const replaceByDefault = () => {
   imageUrl.value = defaultImage
   // return defaultImage

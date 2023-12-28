@@ -22,11 +22,21 @@ export interface Player {
     name: string
   }
   brawlers: PlayerBrawler[]
+  // Custom fields
+  winRate?: number
+  currentWinStreak?: number
+  bestWinStreak?: number
+  currentStarPlayerStreak?: number
+  bestStarPlayerStreak?: number
 }
 
 export interface PlayerDocument extends Player, Document {
   // Custom fields
   winRate: number
+  currentWinStreak: number
+  bestWinStreak: number
+  currentStarPlayerStreak: number
+  bestStarPlayerStreak: number
 }
 
 export interface PlayerModel extends Model<PlayerDocument> {}
@@ -51,6 +61,10 @@ export interface PlayerBrawler {
     id: number
     name: string
   }[]
+  // Custom fields
+  winRate?: number
+  totalWins?: number
+  totalBattles?: number
 }
 
 export interface DBPlayerBrawler extends PlayerBrawler {
@@ -118,7 +132,11 @@ const PlayerSchema = new Schema<PlayerDocument>({
   },
   brawlers: [PlayerBrawlerSchema],
   // Custom
-  winRate: { type: Number, default: 0 }
+  winRate: { type: Number, default: 0 },
+  currentWinStreak: { type: Number, default: 0 },
+  bestWinStreak: { type: Number, default: 0 },
+  currentStarPlayerStreak: { type: Number, default: 0 },
+  bestStarPlayerStreak: { type: Number, default: 0 }
 })
 
 export default model<PlayerDocument, PlayerModel>('Player', PlayerSchema)

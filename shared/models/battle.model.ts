@@ -10,6 +10,8 @@ export interface Battle {
   megaPig: boolean
   win: boolean
   starPlayer: boolean
+  winStreak: number
+  starPlayerStreak: number
 }
 
 export interface BattleDocument extends Battle, Document {}
@@ -26,7 +28,9 @@ const BattleSchema = new Schema<BattleDocument>({
   clubLeague: { type: Boolean, required: true },
   megaPig: { type: Boolean, required: true },
   win: { type: Boolean, required: true },
-  starPlayer: { type: Boolean, required: true }
+  starPlayer: { type: Boolean, required: true },
+  winStreak: { type: Number, required: true },
+  starPlayerStreak: { type: Number, required: true }
 })
 
 export default model<BattleDocument, BattleModel>('Battle', BattleSchema)
