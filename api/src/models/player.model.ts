@@ -1,6 +1,37 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import { model, Schema, Document, Model } from 'mongoose'
 
-interface IPlayerBrawler {
+export interface Player {
+  tag: string
+  name: string
+  nameColor: string
+  icon: {
+    id: number
+  }
+  trophies: number
+  highestTrophies: number
+  expLevel: number
+  expPoints: number
+  isQualifiedFromChampionshipChallenge: boolean
+  '3vs3Victories': number
+  soloVictories: number
+  duoVictories: number
+  bestRoboRumbleTime: number
+  bestTimeAsBigBrawler: number
+  club: {
+    tag: string
+    name: string
+  }
+  brawlers: PlayerBrawler[]
+}
+
+export interface PlayerDocument extends Player, Document {
+  // Custom fields
+  winRate: number
+}
+
+export interface PlayerModel extends Model<PlayerDocument> {}
+
+export interface PlayerBrawler {
   id: number
   name: string
   power: number
@@ -22,31 +53,16 @@ interface IPlayerBrawler {
   }[]
 }
 
-interface IPlayer extends Document {
-  tag: string
-  name: string
-  nameColor: string
-  icon: {
-    id: number
-  }
-  trophies: number
-  highestTrophies: number
-  expLevel: number
-  expPoints: number
-  isQualifiedFromChampionshipChallenge: boolean
-  '3vs3Victories': number
-  soloVictories: number
-  duoVictories: number
-  bestRoboRumbleTime: number
-  bestTimeAsBigBrawler: number
-  club: {
-    tag: string
-    name: string
-  }
-  brawlers: IPlayerBrawler[]
+export interface DBPlayerBrawler extends PlayerBrawler {
+  // Custom fields
+  winRate: number
+  totalWins: number
+  totalBattles: number
 }
 
-const playerBrawlerSchema: Schema<IPlayerBrawler> = new Schema({
+export interface PlayerBrawlerModel extends Model<DBPlayerBrawler> {}
+
+const PlayerBrawlerSchema = new Schema<DBPlayerBrawler>({
   id: Number,
   name: String,
   power: Number,
@@ -71,10 +87,14 @@ const playerBrawlerSchema: Schema<IPlayerBrawler> = new Schema({
       id: Number,
       name: String
     }
-  ]
+  ],
+  // Custom fields
+  winRate: { type: Number, default: 0 },
+  totalWins: { type: Number, default: 0 },
+  totalBattles: { type: Number, default: 0 }
 })
 
-const playerSchema: Schema<IPlayer> = new Schema({
+const PlayerSchema = new Schema<PlayerDocument>({
   _id: String,
   tag: String,
   name: String,
@@ -96,9 +116,9 @@ const playerSchema: Schema<IPlayer> = new Schema({
     tag: String,
     name: String
   },
-  brawlers: [playerBrawlerSchema]
+  brawlers: [PlayerBrawlerSchema],
+  // Custom
+  winRate: { type: Number, default: 0 }
 })
 
-const Player = mongoose.model<IPlayer>('Player', playerSchema)
-
-export default Player
+export default model<PlayerDocument, PlayerModel>('Player', PlayerSchema)

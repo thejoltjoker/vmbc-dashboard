@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import { model, Schema, Document, Model } from 'mongoose'
 
-interface IBattle extends Document {
+export interface Battle {
   playerTag: string
   battleLogId: string
   battleTime: Date
@@ -10,9 +10,15 @@ interface IBattle extends Document {
   megaPig: boolean
   win: boolean
   starPlayer: boolean
+  winStreak: number
+  starPlayerStreak: number
 }
 
-const battleSchema: Schema<IBattle> = new Schema({
+export interface BattleDocument extends Battle, Document {}
+
+export interface BattleModel extends Model<BattleDocument> {}
+
+const BattleSchema = new Schema<BattleDocument>({
   _id: String,
   playerTag: { type: String, required: true },
   battleLogId: { type: String, required: true },
@@ -22,9 +28,9 @@ const battleSchema: Schema<IBattle> = new Schema({
   clubLeague: { type: Boolean, required: true },
   megaPig: { type: Boolean, required: true },
   win: { type: Boolean, required: true },
-  starPlayer: { type: Boolean, required: true }
+  starPlayer: { type: Boolean, required: true },
+  winStreak: { type: Number, required: true },
+  starPlayerStreak: { type: Number, required: true }
 })
 
-const Battle = mongoose.model('Battle', battleSchema)
-
-export default Battle
+export default model<BattleDocument, BattleModel>('Battle', BattleSchema)

@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import { model, Schema, Document, Model } from 'mongoose'
 
-interface IMember extends Document {
+export interface Member {
   icon: { id: number }
   tag: string
   name: string
@@ -11,22 +11,24 @@ interface IMember extends Document {
   lastPlayed: Date
 }
 
-const memberSchema: Schema<IMember> = new Schema({
+export interface MemberDocument extends Member, Document {}
+
+export interface MemberModel extends Model<MemberDocument> {}
+
+const MemberSchema = new Schema<MemberDocument>({
   _id: String,
-  icon: { type: Object, required: true },
-  tag: { type: String, required: true },
-  name: { type: String, required: true },
-  trophies: { type: Number, required: true },
+  icon: Object,
+  tag: String,
+  name: String,
+  trophies: Number,
   role: {
     type: String,
     enum: ['notMember', 'member', 'president', 'senior', 'vicePresident', 'unknown'],
     required: true
   },
-  nameColor: { type: String, required: false },
-  winRate: { type: Number, required: true },
-  lastPlayed: { type: Date, required: true }
+  nameColor: String,
+  winRate: Number,
+  lastPlayed: Date
 })
 
-const Member = mongoose.model<IMember>('Member', memberSchema)
-
-export default Member
+export default model<MemberDocument, MemberModel>('Member', MemberSchema)

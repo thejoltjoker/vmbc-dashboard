@@ -1,5 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose'
-interface IClubMember extends Document {
+import { model, Schema, Document, Model } from 'mongoose'
+
+export interface ClubMember {
   tag: string
   name: string
   nameColor: string
@@ -9,7 +10,23 @@ interface IClubMember extends Document {
     id: number
   }
 }
-interface IClub extends Document {
+
+const ClubMemberSchema = new Schema<ClubMember>({
+  tag: String,
+  name: String,
+  nameColor: String,
+  role: {
+    type: String,
+    enum: ['notMember', 'member', 'president', 'senior', 'vicePresident', 'unknown'],
+    required: true
+  },
+  trophies: Number,
+  icon: {
+    id: Number
+  }
+})
+
+export interface Club {
   tag: string
   name: string
   description: string
@@ -17,40 +34,27 @@ interface IClub extends Document {
   badgeId: number
   requiredTrophies: number
   trophies: number
-  members: IClubMember[]
+  members: ClubMember[]
 }
 
-const clubMemberSchema: Schema<IClubMember> = new Schema({
-  tag: { type: String, required: true },
-  name: { type: String, required: true },
-  nameColor: { type: String, required: true },
-  role: {
-    type: String,
-    enum: ['notMember', 'member', 'president', 'senior', 'vicePresident', 'unknown'],
-    required: true
-  },
-  trophies: { type: Number, required: true },
-  icon: {
-    id: { type: Number, required: true }
-  }
-})
+export interface ClubDocument extends Club, Document {}
 
-const clubSchema: Schema<IClub> = new Schema({
-  _id: { type: String, required: true },
-  tag: { type: String, required: true },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
+export interface ClubModel extends Model<ClubDocument> {}
+
+const ClubSchema = new Schema<ClubDocument>({
+  _id: String,
+  tag: String,
+  name: String,
+  description: String,
   type: {
     type: String,
     enum: ['open', 'inviteOnly', 'closed', 'unknown'],
     required: true
   },
-  badgeId: { type: Number, required: true },
-  requiredTrophies: { type: Number, required: true },
-  trophies: { type: Number, required: true },
-  members: { type: [clubMemberSchema], required: true }
+  badgeId: Number,
+  requiredTrophies: Number,
+  trophies: Number,
+  members: [ClubMemberSchema]
 })
 
-const Club = mongoose.model<IClub>('Club', clubSchema)
-
-export default Club
+export default model<ClubDocument, ClubModel>('Club', ClubSchema)
