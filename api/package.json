@@ -20,5 +20,9 @@
     "rimraf": "^5.0.0",
     "typescript": "^4.0.0"
   },
-  "main": "dist/src/functions/*.js"
+  "main": "dist/src/functions/*.js",
+  "engines" : { 
+    "node" : ">=18.0"
+  }
+
 }
