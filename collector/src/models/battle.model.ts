@@ -12,6 +12,7 @@ export interface Battle {
   starPlayer: boolean
   winStreak: number
   starPlayerStreak: number
+  duration?: number
 }
 
 export interface BattleDocument extends Battle, Document {}
@@ -30,7 +31,8 @@ const BattleSchema = new Schema<BattleDocument>({
   win: { type: Boolean, required: true },
   starPlayer: { type: Boolean, required: true },
   winStreak: { type: Number, required: true },
-  starPlayerStreak: { type: Number, required: true }
+  starPlayerStreak: { type: Number, required: true },
+  duration: { type: Number, required: false }
 })
 
 export default model<BattleDocument, BattleModel>('Battle', BattleSchema)

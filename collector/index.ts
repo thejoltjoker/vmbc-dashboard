@@ -216,7 +216,8 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
           win: isBattleLogWin(battleLog),
           starPlayer: isStarPlayer(tag, battleLog),
           winStreak: winStreak,
-          starPlayerStreak: starPlayerStreak
+          starPlayerStreak: starPlayerStreak,
+          duration: battleLog.battle.duration
         })
 
         await BattleModel.updateOne({ _id: battleId }, battleData, {
