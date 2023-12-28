@@ -4,11 +4,13 @@ import axios from 'axios'
 import mongoose from 'mongoose'
 import { parseISO } from 'date-fns'
 import { ClubModel, Club } from './src/models/Club'
-import { PlayerModel, Player } from './src/models/Player'
+// import { PlayerModel, Player } from './src/models/Player'
 import { BattleLogModel, BattleLog } from './src/models/BattleLog'
 // import { BattleModel } from './src/models/Battle'
-import { MemberModel } from './src/models/Member'
+// import { MemberModel } from './src/models/Member'
+import MemberModel, { Member } from './src/models/member.model'
 import BattleModel, { Battle } from './src/models/battle.model'
+import PlayerModel, { Player } from './src/models/player.model'
 import _ from 'lodash'
 
 // Log the external IP address to determine Brawl Stars api key
@@ -135,17 +137,20 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
       const tag = member.tag
       let isFirstBattleLog = true
       let winStreak = 0
+      let bestWinStreak = winStreak
       let starPlayerStreak = 0
+      let bestStarPlayerStreak = starPlayerStreak
 
       prefix = `Player: ${tag}`
 
       // Get player
       const player: Player = await getPlayer(tag)
+      // const playerData: PlayerDocument = player
 
       // Get battle logs for player
       const battleLogs: BattleLog[] = await getBattleLogs(tag)
 
-      console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
+      // console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
 
       // Store player win rate
       player.winRate = winRate(battleLogs)
@@ -161,12 +166,12 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
         brawler.totalBattles = data?.totalBattles
       })
 
-      await PlayerModel.updateOne({ _id: player.tag }, player, {
-        upsert: true
-      })
+      // await PlayerModel.updateOne({ _id: player.tag }, player, {
+      //   upsert: true
+      // })
 
       console.log(`[${prefix}] Storing battle logs`)
-      for (const battleLog of _.sortBy(battleLogs, [(b) => b.battleTime])) {
+      for (const battleLog of _.sortBy(battleLogs, [(b: BattleLog) => b.battleTime])) {
         const battleLogId = battleTimeToUnix(battleLog.battleTime as string)
         battleLog.battleTime = parseISO(battleLog.battleTime as string)
         console.log(`[${prefix}] Storing battle log: ${battleLog.battleTime.toISOString()}`)
@@ -188,6 +193,10 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
           winStreak = isBattleLogWin(battleLog) ? winStreak + 1 : 0
           starPlayerStreak = isStarPlayer(tag, battleLog) ? starPlayerStreak + 1 : 0
         }
+
+        // Update best streaks
+        if (winStreak > bestWinStreak) bestWinStreak = Number(winStreak)
+        if (starPlayerStreak > bestStarPlayerStreak) bestStarPlayerStreak = Number(starPlayerStreak)
 
         console.log(
           `[${prefix}] Win: ${isBattleLogWin(
@@ -215,19 +224,48 @@ cron.schedule(process.env.CRON_STRING || '*/15 * * * *', async () => {
         })
         isFirstBattleLog = false
       }
-      // battleLogs.forEach(async (battleLog: BattleLog) => {
 
-      // })
+      // Best win streak and star player streak
+      const bestWinStreakDocument = await BattleModel.findOne({ playerTag: tag })
+        .sort({ winStreak: -1 })
+        .limit(1)
+      if (bestWinStreakDocument?.winStreak && bestWinStreakDocument?.winStreak > bestWinStreak) {
+        bestWinStreak = bestWinStreakDocument.winStreak
+      }
+
+      const bestStarPlayerStreakDocument = await BattleModel.findOne({ playerTag: tag })
+        .sort({ starPlayerStreak: -1 })
+        .limit(1)
+      if (
+        bestStarPlayerStreakDocument?.starPlayerStreak &&
+        bestStarPlayerStreakDocument?.starPlayerStreak > bestStarPlayerStreak
+      ) {
+        bestStarPlayerStreak = bestStarPlayerStreakDocument.winStreak
+      }
 
       // Store members with win rate and last played battle for dashboard
       const memberData = new MemberModel({
         _id: tag,
         winRate: winRate(battleLogs),
+        currentWinStreak: winStreak,
+        bestWinStreak: bestWinStreak,
+        currentStarPlayerStreak: starPlayerStreak,
+        bestStarPlayerStreak: bestStarPlayerStreak,
         lastPlayed: lastBattle(battleLogs).battleTime,
         ...member
       })
       console.log(`[${prefix}] Storing member`)
       await MemberModel.updateOne({ _id: tag }, memberData, {
+        upsert: true
+      })
+
+      // Set streaks on player document
+      player.currentWinStreak = winStreak
+      player.bestWinStreak = bestWinStreak
+      player.currentStarPlayerStreak = starPlayerStreak
+      player.bestStarPlayerStreak = bestStarPlayerStreak
+      console.log(`[${prefix}] Storing player ${player.name} (${player.tag})`)
+      await PlayerModel.updateOne({ _id: player.tag }, player, {
         upsert: true
       })
     }

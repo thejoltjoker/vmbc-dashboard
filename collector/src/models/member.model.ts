@@ -9,6 +9,10 @@ export interface Member {
   nameColor: string
   winRate: number
   lastPlayed: Date
+  currentWinStreak: Number
+  bestWinStreak: Number
+  currentStarPlayerStreak: Number
+  bestStarPlayerStreak: Number
 }
 
 export interface MemberDocument extends Member, Document {}
@@ -28,6 +32,10 @@ const MemberSchema = new Schema<MemberDocument>({
   },
   nameColor: String,
   winRate: Number,
+  currentWinStreak: Number,
+  bestWinStreak: Number,
+  currentStarPlayerStreak: Number,
+  bestStarPlayerStreak: Number,
   lastPlayed: Date
 })
 
