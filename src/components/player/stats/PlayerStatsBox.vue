@@ -14,9 +14,7 @@ import BoxGray from '@/components/boxes/BoxGray.vue'
       </div>
 
       <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
-        <div>
-          <slot name="svg"></slot>
-        </div>
+        <slot name="svg"></slot>
 
         <p class="text-zinc-500 text-sm">
           <slot name="subtitle">Default subtitle</slot>

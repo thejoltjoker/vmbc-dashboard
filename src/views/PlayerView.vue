@@ -15,6 +15,7 @@ import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import PlayerStatsTopBrawler from '@/components/player/stats/PlayerStatsTopBrawler.vue'
 import PlayerStatsTrophies from '@/components/player/stats/PlayerStatsTrophies.vue'
+import PlayerStatsExperience from '@/components/player/stats/PlayerStatsExperience.vue'
 const route = useRoute()
 
 const loading = ref(false)
@@ -107,42 +108,8 @@ watch(
 
       <div class="grid md:grid-cols-2 gap-2 my-2">
         <PlayerStatsTrophies :player="player" />
-        <BoxGray>
-          <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full">
-            <p class="uppercase font-medium text-zinc-500 text-sm">Experience Level</p>
+        <PlayerStatsExperience :player="player" />
 
-            <p class="font-display uppercase font-bold text-white text-6xl">
-              {{ player.expLevel }}
-            </p>
-
-            <div class="inline-flex gap-2 border-t-[1px] pt-2 border-zinc-100/10">
-              <div class="text-sky-500">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  class="w-5 h-5"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.606 12.97a.75.75 0 01-.134 1.051 2.494 2.494 0 00-.93 2.437 2.494 2.494 0 002.437-.93.75.75 0 111.186.918 3.995 3.995 0 01-4.482 1.332.75.75 0 01-.461-.461 3.994 3.994 0 011.332-4.482.75.75 0 011.052.134z"
-                    clip-rule="evenodd"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.752 12A13.07 13.07 0 008 14.248v4.002c0 .414.336.75.75.75a5 5 0 004.797-6.414 12.984 12.984 0 005.45-10.848.75.75 0 00-.735-.735 12.984 12.984 0 00-10.849 5.45A5 5 0 001 11.25c.001.414.337.75.751.75h4.002zM13 9a2 2 0 100-4 2 2 0 000 4z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-
-              <p class="text-zinc-500 text-sm">
-                <span class="text-white">{{ player.expPoints.toLocaleString() }}</span>
-                experience points
-              </p>
-            </div>
-          </div>
-        </BoxGray>
         <BoxGray>
           <div class="p-3 md:p-5 flex flex-col gap-3 justify-between h-full">
             <p class="uppercase font-medium text-zinc-500 text-sm">Victories</p>

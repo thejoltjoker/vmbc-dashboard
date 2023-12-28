@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import PlayerStatsBox from '@/components/player/stats/PlayerStatsBox.vue'
-import type { Brawler } from '@/shared/models/brawler.model'
-import type { Player, PlayerBrawler } from '@/shared/models/player.model'
+import type { Player } from '@/shared/models/player.model'
 
 defineProps<{
   player: Player
