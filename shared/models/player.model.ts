@@ -22,12 +22,15 @@ export interface Player {
     name: string
   }
   brawlers: PlayerBrawler[]
+}
+
+export interface DBPlayer extends Player {
   // Custom fields
-  winRate?: number
-  currentWinStreak?: number
-  bestWinStreak?: number
-  currentStarPlayerStreak?: number
-  bestStarPlayerStreak?: number
+  winRate: number
+  currentWinStreak: number
+  bestWinStreak: number
+  currentStarPlayerStreak: number
+  bestStarPlayerStreak: number
 }
 
 export interface PlayerDocument extends Player, Document {

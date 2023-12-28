@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Player } from '@/../shared/models/player.model'
+import type { DBPlayer } from '@/../shared/models/player.model'
 import BoxGray from '@/components/boxes/BoxGray.vue'
 
 defineProps<{
-  player: Player
+  player: DBPlayer
 }>()
 </script>
 
